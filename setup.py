@@ -7,6 +7,7 @@ requires = [
     'SQLAlchemy',
     'pymssql',
     'waitress',
+    'bunch'
 ]
 
 setup(
