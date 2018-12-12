@@ -6,8 +6,7 @@ requires = [
     'pyramid',
     'SQLAlchemy',
     'pymssql',
-    'waitress',
-    'bunch'
+    'waitress'
 ]
 
 setup(
