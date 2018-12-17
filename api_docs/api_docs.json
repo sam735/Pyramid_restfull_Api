@@ -13,7 +13,7 @@
     }
   },
   "host": "localhost:6547",
-  "basePath": "/v1.0",
+  "basePath": "/api/v1.0/",
   "tags": [
     {
       "name": "admins",
@@ -28,7 +28,7 @@
     "https"
   ],
   "paths": {
-    "/procedure": {
+    "/procedures": {
       "get": {
         "tags": [
           "admins"
