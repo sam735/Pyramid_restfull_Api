@@ -6,7 +6,8 @@ requires = [
     'pyramid',
     'SQLAlchemy',
     'pymssql',
-    'waitress'
+    'waitress',
+    'bravado-core'
 ]
 
 setup(

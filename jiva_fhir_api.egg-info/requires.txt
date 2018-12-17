@@ -2,4 +2,4 @@ pyramid
 SQLAlchemy
 pymssql
 waitress
-bunch
+bravado-core

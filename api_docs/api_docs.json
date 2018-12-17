@@ -113,9 +113,6 @@
           },
           "400": {
             "description": "invalid input, object invalid"
-          },
-          "409": {
-            "description": "an existing item already exists"
           }
         },
         "x-swagger-router-controller": "jiva_Fhir_Api.api.procedure.controllers.procedure_controller"
@@ -1738,7 +1735,7 @@
       "type": "object",
       "properties": {
         "authorReference": {
-          "type": "string"
+          "$ref": "#/definitions/Refrence"
         },
         "authorString": {
           "type": "string"

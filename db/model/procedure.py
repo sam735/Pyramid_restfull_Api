@@ -7,6 +7,8 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+from utility.util import convertStringToDateTime
+
 class CodeYn(Base):
     __tablename__ = 'code_yn'
 
@@ -30,8 +32,6 @@ class FhirProcedure(Base):
     not_done = Column(BIT)
     perfome_start_dt = Column(DateTime)
     perfome_end_dt = Column(DateTime)
-    fhir_identifier_idn = Column(Numeric(18, 0))
-    fhir_note_idn = Column(Numeric(18, 0))
     # crt_dt = Column(DateTime, nullable=False, server_default=text("(getutcdate())"))
     # upd_dt = Column(DateTime, nullable=False, server_default=text("(getutcdate())"))
     user_idn = Column(Numeric(18, 0), nullable=False)
@@ -42,11 +42,9 @@ class FhirProcedure(Base):
         self.extn_id = procedure.id
         self.proc_status = procedure.status
         self.not_done = procedure.notDone
-        self.perfome_start_dt = procedure.performedDateTime
-        self.perfome_start_dt = procedure.performedPeriod.start
-        self.perfome_end_dt = procedure.performedPeriod.end
-        self.fhir_identifier_idn = fhir_identifier_idn
-        self.fhir_note_idn = fhir_note_idn
+        self.perfome_start_dt = convertStringToDateTime(procedure.performedDateTime)
+        self.perfome_start_dt = convertStringToDateTime(procedure.performedPeriod.start)
+        self.perfome_end_dt = convertStringToDateTime(procedure.performedPeriod.end)
         self.user_idn = 2
 
 class CodeCodeableConcept(Base):
@@ -69,6 +67,18 @@ class CodeCodeableConcept(Base):
 
     code_yn = relationship(u'CodeYn')
 
+    def __init__(self,codeObj = None,text = None,fhir_idn = None,source = None,attribute = None):
+        self.codeable_system = codeObj.system
+        self.codeable_version = codeObj.version
+        self.code = codeObj.code
+        self.display = codeObj.display
+        self.user_selected = codeObj.userSelected
+        self.fhir_idn = fhir_idn
+        self.source = source
+        self.attribute = attribute
+        self.code_text = text
+        self.user_idn = 2
+
 class CodeRefrence(Base):
     __tablename__ = 'code_refrence'
 
@@ -84,6 +94,15 @@ class CodeRefrence(Base):
     entity_active = Column(ForeignKey(u'code_yn.yn_cd'), nullable=False, server_default=("('Y')"))
 
     code_yn = relationship(u'CodeYn')
+
+    def __init__(self,refObj = None,fhir_idn = None,source = None,attribute = None):
+        self.refrence = refObj.reference
+        self.display = refObj.display
+        self.source = source
+        self.attribute = attribute
+        self.fhir_idn = fhir_idn
+        self.user_idn = 2
+
 
 class ProcedurePerformer(Base):
     __tablename__ = 'procedure_performer'
@@ -101,6 +120,13 @@ class ProcedurePerformer(Base):
     code_yn = relationship(u'CodeYn')
     fhir_procedure = relationship(u'FhirProcedure')
 
+    def __init__(self,fhir_procedure_idn = None, proc_role = None, proc_actor = None, proc_onbehalf = None):
+        self.fhir_procedure_idn = fhir_procedure_idn
+        self.proc_role = proc_role
+        self.proc_actor = proc_actor
+        self.proc_onbehalf = proc_onbehalf
+        self.user_idn = 2
+
 class ProcedureFocaldevice(Base):
     __tablename__ = 'procedure_focaldevice'
 
@@ -115,6 +141,12 @@ class ProcedureFocaldevice(Base):
 
     code_yn = relationship(u'CodeYn')
     fhir_procedure = relationship(u'FhirProcedure')
+
+    def __init__(self,fhir_procedure_idn = None, proc_action = None, proc_manipulated = None):
+        self.fhir_procedure_idn = fhir_procedure_idn
+        self.proc_action = proc_action
+        self.proc_manipulated = proc_manipulated
+        self.user_idn = 2
 
 class FhirIdentifier(Base):
     __tablename__ = 'fhir_identifier'
@@ -138,13 +170,25 @@ class FhirNote(Base):
     __tablename__ = 'fhir_note'
 
     fhir_note_idn = Column(Integer, primary_key=True)
+    fhir_idn = Column(Numeric(18, 0))
     author_reference = Column(Numeric(18, 0))
     author_string = Column(String(50, u'SQL_Latin1_General_CP1_CI_AS'))
     note_crt_dt = Column(DateTime)
     note_text = Column(String(100, u'SQL_Latin1_General_CP1_CI_AS'))
+    source = Column(String(200, u'SQL_Latin1_General_CP1_CI_AS'))
     # crt_dt = Column(DateTime, nullable=False, server_default=text("(getutcdate())"))
     # upd_dt = Column(DateTime, nullable=False, server_default=text("(getutcdate())"))
     user_idn = Column(Numeric(18, 0), nullable=False)
     entity_active = Column(ForeignKey(u'code_yn.yn_cd'), nullable=False, server_default=("('Y')"))
 
     code_yn = relationship(u'CodeYn')
+
+    def __init__(self,author_reference = None,note = None,fhir_idn = None, source = None):
+        self.fhir_idn = fhir_idn
+        self.author_reference = author_reference
+        self.author_string = note.authorString
+        self.note_crt_dt = convertStringToDateTime(note.time)
+        self.note_text = note.text
+        self.source = source
+        self.user_idn = 2
+

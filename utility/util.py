@@ -1,3 +1,5 @@
+from dateutil import parser
+
 class DictToObject(object):
 	def __init__(self, d):
 		self.__dict__ = d
@@ -10,4 +12,9 @@ def return_lower_case_of_string(str):
 
 
 
+def convertStringToDateTime(str):
+	if str == None:
+		return None
 
+	else:
+		return parser.parse(str)

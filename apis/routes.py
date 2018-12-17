@@ -1,4 +1,4 @@
-from apis.procedure.procedure_controller import add_procedure
+from apis.procedure.controller import add_procedure
 
 def includeme(config):
 	config.add_route('insert_procedure', '/v1.0/procedure')
