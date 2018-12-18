@@ -3,9 +3,11 @@ from pyramid.response import Response
 from apis.procedure.service import insert_procedure
 
 def add_procedure(request):
+	#import pdb;pdb.set_trace()
 	try:
 		insert_procedure(request)
 	except Exception:
+		request.db.rollback()
 		return Response(
         status='500',
         body=json.dumps({'Details': 'Internal server error,please try after some time'}),

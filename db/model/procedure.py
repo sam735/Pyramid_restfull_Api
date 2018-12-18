@@ -32,22 +32,24 @@ class FhirProcedure(Base):
     not_done = Column(BIT)
     perfome_start_dt = Column(DateTime)
     perfome_end_dt = Column(DateTime)
+    json_payload = Column(String())
     # crt_dt = Column(DateTime, nullable=False, server_default=text("(getutcdate())"))
     # upd_dt = Column(DateTime, nullable=False, server_default=text("(getutcdate())"))
     user_idn = Column(Numeric(18, 0), nullable=False)
     entity_active = Column(ForeignKey(u'code_yn.yn_cd'), nullable=False, server_default=("('Y')"))
 
     code_yn = relationship(u'CodeYn')
-    def __init__(self,procedure,fhir_identifier_idn = None,fhir_note_idn = None):
+    def __init__(self,procedure,jsonPayload):
         self.extn_id = procedure.id
         self.proc_status = procedure.status
         self.not_done = procedure.notDone
         self.perfome_start_dt = convertStringToDateTime(procedure.performedDateTime)
         self.perfome_start_dt = convertStringToDateTime(procedure.performedPeriod.start)
         self.perfome_end_dt = convertStringToDateTime(procedure.performedPeriod.end)
+        self.json_payload = str(jsonPayload)
         self.user_idn = 2
 
-class CodeCodeableConcept(Base):
+class CodeableConcept(Base):
     __tablename__ = 'code_codeable_concept'
     
     codeable_concept_idn = Column(Integer, primary_key=True)
@@ -68,6 +70,7 @@ class CodeCodeableConcept(Base):
     code_yn = relationship(u'CodeYn')
 
     def __init__(self,codeObj = None,text = None,fhir_idn = None,source = None,attribute = None):
+
         self.codeable_system = codeObj.system
         self.codeable_version = codeObj.version
         self.code = codeObj.code
@@ -79,7 +82,7 @@ class CodeCodeableConcept(Base):
         self.code_text = text
         self.user_idn = 2
 
-class CodeRefrence(Base):
+class Refrence(Base):
     __tablename__ = 'code_refrence'
 
     code_refrence_idn = Column(Integer, primary_key=True)
@@ -166,7 +169,7 @@ class FhirIdentifier(Base):
 
     code_yn = relationship(u'CodeYn')
 
-class FhirNote(Base):
+class Annotation(Base):
     __tablename__ = 'fhir_note'
 
     fhir_note_idn = Column(Integer, primary_key=True)
