@@ -13,8 +13,7 @@ def return_lower_case_of_string(str):
 
 
 def convertStringToDateTime(str):
-	if str == None:
-		return None
-
-	else:
+	try:
 		return parser.parse(str)
+	except Exception:
+		return None

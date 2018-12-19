@@ -1,10 +1,7 @@
 from db.model.procedure import (FhirProcedure, CodeYn, CodeableConcept, Refrence, ProcedurePerformer,
                                 ProcedureFocaldevice, FhirIdentifier, Annotation)
 
-from utility.util import (DictToObject,return_lower_case_of_string)
-
-#from db.common import(add_to_CodeableConcept_table,add_to_refrence_table)
-
+from utility.util import (DictToObject)
 
 def insert_procedure(request):
     procedure = request.swagger_data['ProcedureItem']
@@ -17,10 +14,6 @@ def insert_procedure(request):
     request.db.flush()
 
     
-    # for k, v in procedure_payload.items():
-    #     myCls = classLookup[type(procedure[key]).__name__]
-    #     myCls(procedure, 'procedure', k)
-
 
     for key, val in procedure_payload.items():
         if type(procedure[key]).__name__ == 'list':
@@ -37,8 +30,8 @@ def insert_procedure(request):
                         Codeeable_obj = CodeableConcept(DictToObject({}),val.text,procedure_obj.fhir_procedure_idn,'procedure',key)
                         request.db.add(Codeeable_obj)
 
-                authorReference = None
                 if type(val).__name__ == 'Annotation':
+                    authorReference = None
                     if val.authorReference != None:
                         ref_obj = Refrence(val.authorReference,procedure_obj.fhir_procedure_idn,'procedure',key)
                         request.db.add(ref_obj)
@@ -46,6 +39,29 @@ def insert_procedure(request):
                         authorReference = ref_obj.code_refrence_idn
                     Annotation_obj = Annotation(authorReference,val,procedure_obj.fhir_procedure_idn,'procedure')
                     request.db.add(Annotation_obj)
+
+                if type(val).__name__ == 'Identifier':
+                    type_idn = []
+                    if val.type != None:
+                        if val.type.get('coding') != None:
+                            for code in val.type.get('coding'):
+                                Codeeable_obj = CodeableConcept(DictToObject(code),val.type.get('text'),procedure_obj.fhir_procedure_idn,'procedure',key)
+                                request.db.add(Codeeable_obj)
+                                request.db.flush()
+                                type_idn.append(Codeeable_obj.codeable_concept_idn)
+                        else:
+                            Codeeable_obj = CodeableConcept(DictToObject({}),val.text,procedure_obj.fhir_procedure_idn,'procedure',key)
+                            request.db.add(Codeeable_obj)
+                            request.db.flush()
+                            type_idn.append(Codeeable_obj.codeable_concept_idn)
+                    if len(type_idn) == 0 :
+                        proc_identfr = FhirIdentifier(val,None,procedure_obj.fhir_procedure_idn,'procedure')
+                        request.db.add(proc_identfr)
+                    else:
+                        for idn in type_idn:
+                            proc_identfr = FhirIdentifier(val,idn,procedure_obj.fhir_procedure_idn,'procedure')
+                            request.db.add(proc_identfr)
+
 
         if type(procedure[key]).__name__ == 'Refrence':
             ref_obj = Refrence(procedure[key],procedure_obj.fhir_procedure_idn,'procedure',key)
