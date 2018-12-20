@@ -1,9 +1,12 @@
 from db.model.procedure import (FhirProcedure, CodeYn, CodeableConcept, Refrence, ProcedurePerformer,
-                                ProcedureFocaldevice, FhirIdentifier, Annotation)
+								ProcedureFocaldevice, FhirIdentifier, Annotation)
 
-from utility.util import (DictToObject)
+
+from utility.util import (DictToObject,to_json_obj)
 
 from db.common import(insert_to_identifier,insert_to_annotation)
+
+import json
 
 def insert_procedure(request):
     procedure = request.swagger_data['ProcedureItem']
@@ -113,3 +116,121 @@ def insert_procedure(request):
                 request.db.add(focalDevice_obj)
     
     request.db.flush()
+
+def fetch_procedure(request):
+	import pdb;pdb.set_trace()
+	param_obj = request.swagger_data
+
+	#for handling multiple params
+	if(param_obj['subject'] and param_obj['date']):
+
+		patient_dt_subquery = request.db.query(Refrence.fhir_idn.label('fhir_idn')).\
+									filter(Refrence.attribute == 'subject',Refrence.refrence == param_obj['subject']).subquery()
+
+		patient_dt = request.db.query(FhirProcedure.json_payload).\
+							filter(FhirProcedure.perfome_start_dt == param_obj['date'],
+							FhirProcedure.fhir_procedure_idn.in_([patient_dt_subquery.c.fhir_idn])).all()
+						
+		patient_dt_json = to_json_obj(patient_dt)
+		return patient_dt_json
+
+	
+	if(param_obj['status']): 
+		stat = request.db.query(FhirProcedure.json_payload).filter(FhirProcedure.proc_status == param_obj['status']).all()
+		stat_json = to_json_obj(stat)
+		return stat_json
+
+	if(param_obj['subject']):
+		sub = request.db.query(FhirProcedure.json_payload).\
+					filter(FhirProcedure.fhir_procedure_idn == Refrence.fhir_idn).\
+					filter(Refrence.attribute == 'subject').filter(Refrence.refrence == param_obj['subject']).\
+					all()
+		sub_json = to_json_obj(sub)
+		return sub_json
+
+	if(param_obj['performer']):
+		perf = request.db.query(FhirProcedure.json_payload).\
+					filter(FhirProcedure.fhir_procedure_idn == Refrence.fhir_idn).\
+					filter(Refrence.attribute == 'performer').filter(Refrence.refrence == param_obj['performer']).\
+					filter(Refrence.code_refrence_idn == ProcedurePerformer.proc_actor).\
+					all()
+		perf_json = to_json_obj(perf)
+		return perf_json
+
+	if(param_obj['patient']):
+		patient = request.db.query(FhirProcedure.json_payload).\
+					filter(FhirProcedure.fhir_procedure_idn == Refrence.fhir_idn).\
+					filter(Refrence.attribute == 'patient').filter(Refrence.refrence == param_obj['patient']).\
+					all()   
+		patient_json = to_json_obj(patient)
+		return patient_json
+
+	if(param_obj['part-of']):
+		partOf= request.db.query(FhirProcedure.json_payload).\
+					filter(FhirProcedure.fhir_procedure_idn == Refrence.fhir_idn).\
+					filter(Refrence.attribute == 'partOf').filter(Refrence.refrence == param_obj['part-of']).\
+					all()
+		partOf_json = to_json_obj(partOf)   
+		return partOf_json
+					
+	if(param_obj['location']):
+		loc = request.db.query(FhirProcedure.json_payload).\
+					filter(FhirProcedure.fhir_procedure_idn == Refrence.fhir_idn).\
+					filter(Refrence.attribute == 'location').filter(Refrence.refrence == param_obj['location']).\
+					all()   
+		loc_json = to_json_obj(loc)
+		return loc_json
+
+	if(param_obj['encounter']):
+		enc = request.db.query(FhirProcedure.json_payload).\
+					filter(FhirProcedure.fhir_procedure_idn == Refrence.fhir_idn).\
+					filter(Refrence.attribute == 'encounter').filter(Refrence.refrence == param_obj['encounter']).\
+					all()
+		enc_json = to_json_obj(enc)
+		return enc_json 
+		 
+	if(param_obj['identifier']):
+		identifier = request.db.query(FhirProcedure.json_payload).\
+					filter(FhirProcedure.fhir_procedure_idn == FhirIdentifier.fhir_idn).\
+					filter(FhirIdentifier.value == param_obj['identifier']).\
+					all()
+		identifier_json = to_json_obj(identifier)
+		return identifier_json  
+					
+	if(param_obj['definition']):
+		definition = request.db.query(FhirProcedure.json_payload).\
+					filter(FhirProcedure.fhir_procedure_idn == Refrence.fhir_idn).\
+					filter(Refrence.attribute == 'definition').filter(Refrence.refrence == param_obj['definition']).\
+					all()
+		definition_json = to_json_obj(definition)
+		return definition_json
+
+	if(param_obj['context']):
+		context = request.db.query(FhirProcedure.json_payload).\
+					filter(FhirProcedure.fhir_procedure_idn == Refrence.fhir_idn).\
+					filter(Refrence.attribute == 'context').filter(Refrence.refrence == param_obj['context']).\
+					all()
+		context_json = to_json_obj(context)
+		return context_json
+
+	if(param_obj['code']):
+		code = request.db.query(FhirProcedure.json_payload).\
+					filter(FhirProcedure.fhir_procedure_idn == CodeableConcept.fhir_idn).\
+					filter(CodeableConcept.attribute == 'code').filter(CodeableConcept.code == param_obj['code']).\
+					all()
+		code_json = to_json_obj(code)
+		return code_json
+
+	if(param_obj['based-on']):
+		basedOn = request.db.query(FhirProcedure.json_payload).\
+					filter(FhirProcedure.fhir_procedure_idn == CodeableConcept.fhir_idn).\
+					filter(Refrence.attribute == 'basedOn').filter(Refrence.code == param_obj['based-on']).\
+					all()
+		basedOn_json = to_json_obj(basedOn)             
+		return basedOn_json
+
+	if(param_obj['date']):
+		dt = request.db.query(FhirProcedure.json_payload).filter(FhirProcedure.perfome_start_dt == param_obj['date']).all()
+		dt_json = to_json_obj(dt)
+		return dt_json
+

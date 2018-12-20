@@ -39,6 +39,7 @@ class FhirProcedure(Base):
     entity_active = Column(ForeignKey(u'code_yn.yn_cd'), nullable=False, server_default=("('Y')"))
 
     code_yn = relationship(u'CodeYn')
+
     def __init__(self,procedure,jsonPayload):
         
         self.extn_id = procedure.id
@@ -49,6 +50,7 @@ class FhirProcedure(Base):
         self.perfome_end_dt = convertStringToDateTime(procedure.performedPeriod.end) if procedure.performedPeriod else None
         self.json_payload = str(jsonPayload)
         self.user_idn = 2
+
 
 class CodeableConcept(Base):
     __tablename__ = 'code_codeable_concept'
