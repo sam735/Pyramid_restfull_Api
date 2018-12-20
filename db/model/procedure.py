@@ -32,7 +32,7 @@ class FhirProcedure(Base):
     not_done = Column(BIT)
     perfome_start_dt = Column(DateTime)
     perfome_end_dt = Column(DateTime)
-    json_payload = Column(String())
+    json_payload = Column(String(4096))
     # crt_dt = Column(DateTime, nullable=False, server_default=text("(getutcdate())"))
     # upd_dt = Column(DateTime, nullable=False, server_default=text("(getutcdate())"))
     user_idn = Column(Numeric(18, 0), nullable=False)
@@ -40,12 +40,13 @@ class FhirProcedure(Base):
 
     code_yn = relationship(u'CodeYn')
     def __init__(self,procedure,jsonPayload):
+        
         self.extn_id = procedure.id
         self.proc_status = procedure.status
         self.not_done = procedure.notDone
         self.perfome_start_dt = convertStringToDateTime(procedure.performedDateTime)
-        self.perfome_start_dt = convertStringToDateTime(procedure.performedPeriod.start)
-        self.perfome_end_dt = convertStringToDateTime(procedure.performedPeriod.end)
+        self.perfome_start_dt = convertStringToDateTime(procedure.performedPeriod.start) if procedure.performedPeriod else None
+        self.perfome_end_dt = convertStringToDateTime(procedure.performedPeriod.end) if procedure.performedPeriod else None
         self.json_payload = str(jsonPayload)
         self.user_idn = 2
 
@@ -172,15 +173,15 @@ class FhirIdentifier(Base):
     code_yn = relationship(u'CodeYn')
 
     def __init__(self,idntfr = None,proc_type = None,fhir_idn = None,source = None):
-        print(fhir_idn)
+
         self.fhir_idn = fhir_idn
         self.source = source
         self.use = idntfr.use
         self.type = proc_type
         self.identifier_system = idntfr.system
         self.value = idntfr.value
-        self.identifier_start_dt = convertStringToDateTime(idntfr.period.get('start'))
-        self.identifier_end_dt = convertStringToDateTime(idntfr.period.get('end')) 
+        self.identifier_start_dt = convertStringToDateTime(idntfr.period.get('start')) if idntfr.period else None
+        self.identifier_end_dt = convertStringToDateTime(idntfr.period.get('end')) if idntfr.period else None
         self.assigner = None
         self.user_idn = 2
 
@@ -206,7 +207,7 @@ class Annotation(Base):
         self.fhir_idn = fhir_idn
         self.author_reference = author_reference
         self.author_string = note.authorString
-        self.note_crt_dt = convertStringToDateTime(note.time)
+        self.note_crt_dt = convertStringToDateTime(note.time) 
         self.note_text = note.text
         self.source = source
         self.user_idn = 2
