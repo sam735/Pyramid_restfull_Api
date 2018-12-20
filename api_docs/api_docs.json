@@ -24,9 +24,6 @@
       "description": "Operations available to regular developers"
     }
   ],
-  "schemes": [
-    "https"
-  ],
   "paths": {
     "/procedures": {
       "get": {
@@ -34,28 +31,26 @@
           "admins"
         ],
         "summary": "searches Procedure",
+        "operationId": "searchProcedure",
         "description": "By passing in the appropriate options, you can search for\navailable Procedure in the system\n",
-        "operationId": "search_procedure",
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "skip",
             "in": "query",
+            "name": "skip",
             "description": "number of records to skip for pagination",
-            "required": false,
             "type": "integer",
-            "minimum": 0,
-            "format": "int32"
+            "format": "int32",
+            "minimum": 0
           },
           {
-            "name": "limit",
             "in": "query",
+            "name": "limit",
             "description": "maximum number of records to return",
-            "required": false,
             "type": "integer",
-            "maximum": 10,
+            "format": "int32",
             "minimum": 0,
             "format": "int32"
           },
@@ -178,6 +173,16 @@
             "maximum": 10,
             "minimum": 0,
             "format": "string"
+          },
+          {
+            "name": "identifier",
+            "in": "query",
+            "description": "fetch records based on a given identifier",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
           }
         ],
         "responses": {
@@ -193,16 +198,15 @@
           "400": {
             "description": "bad input parameter"
           }
-        },
-        "x-swagger-router-controller": "jiva_Fhir_Api.api.procedure.controllers.procedure_controller"
+        }
       },
       "post": {
         "tags": [
           "admins"
         ],
         "summary": "adds an Procedure item",
+        "operationId": "addProcedure",
         "description": "Adds an item to the system",
-        "operationId": "add_procedure",
         "consumes": [
           "application/json"
         ],
@@ -214,7 +218,6 @@
             "in": "body",
             "name": "ProcedureItem",
             "description": "Procedure item to add",
-            "required": false,
             "schema": {
               "$ref": "#/definitions/ProcedureItem"
             }
@@ -226,16 +229,18 @@
           },
           "400": {
             "description": "invalid input, object invalid"
+          },
+          "409": {
+            "description": "an existing item already exists"
           }
-        },
-        "x-swagger-router-controller": "jiva_Fhir_Api.api.procedure.controllers.procedure_controller"
+        }
       },
       "put": {
         "tags": [
           "admins"
         ],
         "summary": "Update an existing ProcedureItem record",
-        "operationId": "update_procedure",
+        "operationId": "updateProcedure",
         "consumes": [
           "application/json",
           "application/xml"
@@ -265,8 +270,7 @@
           "405": {
             "description": "Validation exception"
           }
-        },
-        "x-swagger-router-controller": "jiva_Fhir_Api.api.procedure.controllers.procedure_controller"
+        }
       },
       "delete": {
         "tags": [
@@ -274,7 +278,7 @@
         ],
         "summary": "Deletes a ProcedureItem record",
         "description": "This API deletes a Procedure record based on the ProcedureIdn passed",
-        "operationId": "delete_procedure",
+        "operationId": "deleteProcedure",
         "produces": [
           "application/xml",
           "application/json"
@@ -297,8 +301,7 @@
           "404": {
             "description": "procedure ID not found"
           }
-        },
-        "x-swagger-router-controller": "jiva_Fhir_Api.api.procedure.controllers.procedure_controller"
+        }
       }
     }
   },
@@ -306,7 +309,6 @@
     "ProcedureItem": {
       "type": "object",
       "required": [
-        "performer",
         "status",
         "subject"
       ],
@@ -317,24 +319,28 @@
         "identifier": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/Identifier"
           }
         },
         "definition": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/Refrence"
           }
         },
         "basedOn": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/Refrence"
           }
         },
         "partOf": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/Refrence"
           }
         },
@@ -345,1400 +351,149 @@
           "type": "boolean"
         },
         "notDoneReason": {
+          "type": "object",
           "$ref": "#/definitions/CodeableConcept"
         },
         "category": {
+          "type": "object",
           "$ref": "#/definitions/CodeableConcept"
         },
         "code": {
+          "type": "object",
           "$ref": "#/definitions/CodeableConcept"
         },
         "subject": {
+          "type": "object",
           "$ref": "#/definitions/Refrence"
         },
         "context": {
+          "type": "object",
           "$ref": "#/definitions/Refrence"
         },
         "performedDateTime": {
           "type": "string"
         },
         "performedPeriod": {
+          "type": "object",
           "$ref": "#/definitions/Period"
         },
         "performer": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/ProcedureItem_performer"
+            "type": "object",
+            "required": [
+              "actor"
+            ],
+            "properties": {
+              "role": {
+                "type": "object",
+                "$ref": "#/definitions/CodeableConcept"
+              },
+              "actor": {
+                "type": "object",
+                "$ref": "#/definitions/Refrence"
+              },
+              "onBehalfOf": {
+                "type": "object",
+                "$ref": "#/definitions/Refrence"
+              }
+            }
           }
         },
         "location": {
+          "type": "object",
           "$ref": "#/definitions/Refrence"
         },
         "reasonCode": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/CodeableConcept"
           }
         },
         "reasonReference": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/Refrence"
           }
         },
         "bodySite": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/CodeableConcept"
           }
         },
         "outcome": {
+          "type": "object",
           "$ref": "#/definitions/CodeableConcept"
         },
         "report": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/Refrence"
           }
         },
         "complication": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/CodeableConcept"
           }
         },
         "complicationDetail": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/Refrence"
           }
         },
         "followUp": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/CodeableConcept"
           }
         },
         "note": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/Annotation"
           }
         },
         "focalDevice": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/ProcedureItem_focalDevice"
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "object",
+                "$ref": "#/definitions/CodeableConcept"
+              },
+              "manipulated": {
+                "type": "object",
+                "$ref": "#/definitions/Refrence"
+              }
+            }
           }
         },
         "usedReference": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/Refrence"
           }
         },
         "usedCode": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/CodeableConcept"
           }
         }
-      },
-      "example": {
-        "partOf": [
-          {
-            "reference": "reference",
-            "identifier": {
-              "period": {
-                "start": "start",
-                "end": "end"
-              },
-              "system": "system",
-              "use": "use",
-              "assigner": {
-                "reference": "reference",
-                "display": "display"
-              },
-              "type": {
-                "coding": [
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  },
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  }
-                ],
-                "text": "text"
-              },
-              "value": "value"
-            },
-            "display": "display"
-          },
-          {
-            "reference": "reference",
-            "identifier": {
-              "period": {
-                "start": "start",
-                "end": "end"
-              },
-              "system": "system",
-              "use": "use",
-              "assigner": {
-                "reference": "reference",
-                "display": "display"
-              },
-              "type": {
-                "coding": [
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  },
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  }
-                ],
-                "text": "text"
-              },
-              "value": "value"
-            },
-            "display": "display"
-          }
-        ],
-        "note": [
-          {
-            "authorString": "authorString",
-            "authorReference": "authorReference",
-            "time": "time",
-            "text": "text"
-          },
-          {
-            "authorString": "authorString",
-            "authorReference": "authorReference",
-            "time": "time",
-            "text": "text"
-          }
-        ],
-        "complication": [
-          {
-            "coding": [
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              },
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              }
-            ],
-            "text": "text"
-          },
-          {
-            "coding": [
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              },
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              }
-            ],
-            "text": "text"
-          }
-        ],
-        "code": {
-          "coding": [
-            {
-              "system": "system",
-              "code": "code",
-              "Version": "Version",
-              "userSelected": true,
-              "display": "display"
-            },
-            {
-              "system": "system",
-              "code": "code",
-              "Version": "Version",
-              "userSelected": true,
-              "display": "display"
-            }
-          ],
-          "text": "text"
-        },
-        "subject": {
-          "reference": "reference",
-          "identifier": {
-            "period": {
-              "start": "start",
-              "end": "end"
-            },
-            "system": "system",
-            "use": "use",
-            "assigner": {
-              "reference": "reference",
-              "display": "display"
-            },
-            "type": {
-              "coding": [
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                },
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                }
-              ],
-              "text": "text"
-            },
-            "value": "value"
-          },
-          "display": "display"
-        },
-        "reasonReference": [
-          {
-            "reference": "reference",
-            "identifier": {
-              "period": {
-                "start": "start",
-                "end": "end"
-              },
-              "system": "system",
-              "use": "use",
-              "assigner": {
-                "reference": "reference",
-                "display": "display"
-              },
-              "type": {
-                "coding": [
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  },
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  }
-                ],
-                "text": "text"
-              },
-              "value": "value"
-            },
-            "display": "display"
-          },
-          {
-            "reference": "reference",
-            "identifier": {
-              "period": {
-                "start": "start",
-                "end": "end"
-              },
-              "system": "system",
-              "use": "use",
-              "assigner": {
-                "reference": "reference",
-                "display": "display"
-              },
-              "type": {
-                "coding": [
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  },
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  }
-                ],
-                "text": "text"
-              },
-              "value": "value"
-            },
-            "display": "display"
-          }
-        ],
-        "performedPeriod": {
-          "start": "start",
-          "end": "end"
-        },
-        "followUp": [
-          {
-            "coding": [
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              },
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              }
-            ],
-            "text": "text"
-          },
-          {
-            "coding": [
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              },
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              }
-            ],
-            "text": "text"
-          }
-        ],
-        "context": {
-          "reference": "reference",
-          "identifier": {
-            "period": {
-              "start": "start",
-              "end": "end"
-            },
-            "system": "system",
-            "use": "use",
-            "assigner": {
-              "reference": "reference",
-              "display": "display"
-            },
-            "type": {
-              "coding": [
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                },
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                }
-              ],
-              "text": "text"
-            },
-            "value": "value"
-          },
-          "display": "display"
-        },
-        "definition": [
-          {
-            "reference": "reference",
-            "identifier": {
-              "period": {
-                "start": "start",
-                "end": "end"
-              },
-              "system": "system",
-              "use": "use",
-              "assigner": {
-                "reference": "reference",
-                "display": "display"
-              },
-              "type": {
-                "coding": [
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  },
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  }
-                ],
-                "text": "text"
-              },
-              "value": "value"
-            },
-            "display": "display"
-          },
-          {
-            "reference": "reference",
-            "identifier": {
-              "period": {
-                "start": "start",
-                "end": "end"
-              },
-              "system": "system",
-              "use": "use",
-              "assigner": {
-                "reference": "reference",
-                "display": "display"
-              },
-              "type": {
-                "coding": [
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  },
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  }
-                ],
-                "text": "text"
-              },
-              "value": "value"
-            },
-            "display": "display"
-          }
-        ],
-        "usedCode": [
-          {
-            "coding": [
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              },
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              }
-            ],
-            "text": "text"
-          },
-          {
-            "coding": [
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              },
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              }
-            ],
-            "text": "text"
-          }
-        ],
-        "reasonCode": [
-          {
-            "coding": [
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              },
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              }
-            ],
-            "text": "text"
-          },
-          {
-            "coding": [
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              },
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              }
-            ],
-            "text": "text"
-          }
-        ],
-        "performedDateTime": "performedDateTime",
-        "basedOn": [
-          {
-            "reference": "reference",
-            "identifier": {
-              "period": {
-                "start": "start",
-                "end": "end"
-              },
-              "system": "system",
-              "use": "use",
-              "assigner": {
-                "reference": "reference",
-                "display": "display"
-              },
-              "type": {
-                "coding": [
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  },
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  }
-                ],
-                "text": "text"
-              },
-              "value": "value"
-            },
-            "display": "display"
-          },
-          {
-            "reference": "reference",
-            "identifier": {
-              "period": {
-                "start": "start",
-                "end": "end"
-              },
-              "system": "system",
-              "use": "use",
-              "assigner": {
-                "reference": "reference",
-                "display": "display"
-              },
-              "type": {
-                "coding": [
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  },
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  }
-                ],
-                "text": "text"
-              },
-              "value": "value"
-            },
-            "display": "display"
-          }
-        ],
-        "outcome": {
-          "coding": [
-            {
-              "system": "system",
-              "code": "code",
-              "Version": "Version",
-              "userSelected": true,
-              "display": "display"
-            },
-            {
-              "system": "system",
-              "code": "code",
-              "Version": "Version",
-              "userSelected": true,
-              "display": "display"
-            }
-          ],
-          "text": "text"
-        },
-        "identifier": [
-          {
-            "period": {
-              "start": "start",
-              "end": "end"
-            },
-            "system": "system",
-            "use": "use",
-            "assigner": {
-              "reference": "reference",
-              "display": "display"
-            },
-            "type": {
-              "coding": [
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                },
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                }
-              ],
-              "text": "text"
-            },
-            "value": "value"
-          },
-          {
-            "period": {
-              "start": "start",
-              "end": "end"
-            },
-            "system": "system",
-            "use": "use",
-            "assigner": {
-              "reference": "reference",
-              "display": "display"
-            },
-            "type": {
-              "coding": [
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                },
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                }
-              ],
-              "text": "text"
-            },
-            "value": "value"
-          }
-        ],
-        "performer": [
-          {
-            "actor": {
-              "reference": "reference",
-              "identifier": {
-                "period": {
-                  "start": "start",
-                  "end": "end"
-                },
-                "system": "system",
-                "use": "use",
-                "assigner": {
-                  "reference": "reference",
-                  "display": "display"
-                },
-                "type": {
-                  "coding": [
-                    {
-                      "system": "system",
-                      "code": "code",
-                      "Version": "Version",
-                      "userSelected": true,
-                      "display": "display"
-                    },
-                    {
-                      "system": "system",
-                      "code": "code",
-                      "Version": "Version",
-                      "userSelected": true,
-                      "display": "display"
-                    }
-                  ],
-                  "text": "text"
-                },
-                "value": "value"
-              },
-              "display": "display"
-            },
-            "role": {
-              "coding": [
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                },
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                }
-              ],
-              "text": "text"
-            },
-            "onBehalfOf": {
-              "reference": "reference",
-              "identifier": {
-                "period": {
-                  "start": "start",
-                  "end": "end"
-                },
-                "system": "system",
-                "use": "use",
-                "assigner": {
-                  "reference": "reference",
-                  "display": "display"
-                },
-                "type": {
-                  "coding": [
-                    {
-                      "system": "system",
-                      "code": "code",
-                      "Version": "Version",
-                      "userSelected": true,
-                      "display": "display"
-                    },
-                    {
-                      "system": "system",
-                      "code": "code",
-                      "Version": "Version",
-                      "userSelected": true,
-                      "display": "display"
-                    }
-                  ],
-                  "text": "text"
-                },
-                "value": "value"
-              },
-              "display": "display"
-            }
-          },
-          {
-            "actor": {
-              "reference": "reference",
-              "identifier": {
-                "period": {
-                  "start": "start",
-                  "end": "end"
-                },
-                "system": "system",
-                "use": "use",
-                "assigner": {
-                  "reference": "reference",
-                  "display": "display"
-                },
-                "type": {
-                  "coding": [
-                    {
-                      "system": "system",
-                      "code": "code",
-                      "Version": "Version",
-                      "userSelected": true,
-                      "display": "display"
-                    },
-                    {
-                      "system": "system",
-                      "code": "code",
-                      "Version": "Version",
-                      "userSelected": true,
-                      "display": "display"
-                    }
-                  ],
-                  "text": "text"
-                },
-                "value": "value"
-              },
-              "display": "display"
-            },
-            "role": {
-              "coding": [
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                },
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                }
-              ],
-              "text": "text"
-            },
-            "onBehalfOf": {
-              "reference": "reference",
-              "identifier": {
-                "period": {
-                  "start": "start",
-                  "end": "end"
-                },
-                "system": "system",
-                "use": "use",
-                "assigner": {
-                  "reference": "reference",
-                  "display": "display"
-                },
-                "type": {
-                  "coding": [
-                    {
-                      "system": "system",
-                      "code": "code",
-                      "Version": "Version",
-                      "userSelected": true,
-                      "display": "display"
-                    },
-                    {
-                      "system": "system",
-                      "code": "code",
-                      "Version": "Version",
-                      "userSelected": true,
-                      "display": "display"
-                    }
-                  ],
-                  "text": "text"
-                },
-                "value": "value"
-              },
-              "display": "display"
-            }
-          }
-        ],
-        "complicationDetail": [
-          {
-            "reference": "reference",
-            "identifier": {
-              "period": {
-                "start": "start",
-                "end": "end"
-              },
-              "system": "system",
-              "use": "use",
-              "assigner": {
-                "reference": "reference",
-                "display": "display"
-              },
-              "type": {
-                "coding": [
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  },
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  }
-                ],
-                "text": "text"
-              },
-              "value": "value"
-            },
-            "display": "display"
-          },
-          {
-            "reference": "reference",
-            "identifier": {
-              "period": {
-                "start": "start",
-                "end": "end"
-              },
-              "system": "system",
-              "use": "use",
-              "assigner": {
-                "reference": "reference",
-                "display": "display"
-              },
-              "type": {
-                "coding": [
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  },
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  }
-                ],
-                "text": "text"
-              },
-              "value": "value"
-            },
-            "display": "display"
-          }
-        ],
-        "usedReference": [
-          {
-            "reference": "reference",
-            "identifier": {
-              "period": {
-                "start": "start",
-                "end": "end"
-              },
-              "system": "system",
-              "use": "use",
-              "assigner": {
-                "reference": "reference",
-                "display": "display"
-              },
-              "type": {
-                "coding": [
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  },
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  }
-                ],
-                "text": "text"
-              },
-              "value": "value"
-            },
-            "display": "display"
-          },
-          {
-            "reference": "reference",
-            "identifier": {
-              "period": {
-                "start": "start",
-                "end": "end"
-              },
-              "system": "system",
-              "use": "use",
-              "assigner": {
-                "reference": "reference",
-                "display": "display"
-              },
-              "type": {
-                "coding": [
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  },
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  }
-                ],
-                "text": "text"
-              },
-              "value": "value"
-            },
-            "display": "display"
-          }
-        ],
-        "focalDevice": [
-          {
-            "action": {
-              "coding": [
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                },
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                }
-              ],
-              "text": "text"
-            },
-            "manipulated": {
-              "reference": "reference",
-              "identifier": {
-                "period": {
-                  "start": "start",
-                  "end": "end"
-                },
-                "system": "system",
-                "use": "use",
-                "assigner": {
-                  "reference": "reference",
-                  "display": "display"
-                },
-                "type": {
-                  "coding": [
-                    {
-                      "system": "system",
-                      "code": "code",
-                      "Version": "Version",
-                      "userSelected": true,
-                      "display": "display"
-                    },
-                    {
-                      "system": "system",
-                      "code": "code",
-                      "Version": "Version",
-                      "userSelected": true,
-                      "display": "display"
-                    }
-                  ],
-                  "text": "text"
-                },
-                "value": "value"
-              },
-              "display": "display"
-            }
-          },
-          {
-            "action": {
-              "coding": [
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                },
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                }
-              ],
-              "text": "text"
-            },
-            "manipulated": {
-              "reference": "reference",
-              "identifier": {
-                "period": {
-                  "start": "start",
-                  "end": "end"
-                },
-                "system": "system",
-                "use": "use",
-                "assigner": {
-                  "reference": "reference",
-                  "display": "display"
-                },
-                "type": {
-                  "coding": [
-                    {
-                      "system": "system",
-                      "code": "code",
-                      "Version": "Version",
-                      "userSelected": true,
-                      "display": "display"
-                    },
-                    {
-                      "system": "system",
-                      "code": "code",
-                      "Version": "Version",
-                      "userSelected": true,
-                      "display": "display"
-                    }
-                  ],
-                  "text": "text"
-                },
-                "value": "value"
-              },
-              "display": "display"
-            }
-          }
-        ],
-        "notDone": true,
-        "bodySite": [
-          {
-            "coding": [
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              },
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              }
-            ],
-            "text": "text"
-          },
-          {
-            "coding": [
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              },
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              }
-            ],
-            "text": "text"
-          }
-        ],
-        "report": [
-          {
-            "reference": "reference",
-            "identifier": {
-              "period": {
-                "start": "start",
-                "end": "end"
-              },
-              "system": "system",
-              "use": "use",
-              "assigner": {
-                "reference": "reference",
-                "display": "display"
-              },
-              "type": {
-                "coding": [
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  },
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  }
-                ],
-                "text": "text"
-              },
-              "value": "value"
-            },
-            "display": "display"
-          },
-          {
-            "reference": "reference",
-            "identifier": {
-              "period": {
-                "start": "start",
-                "end": "end"
-              },
-              "system": "system",
-              "use": "use",
-              "assigner": {
-                "reference": "reference",
-                "display": "display"
-              },
-              "type": {
-                "coding": [
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  },
-                  {
-                    "system": "system",
-                    "code": "code",
-                    "Version": "Version",
-                    "userSelected": true,
-                    "display": "display"
-                  }
-                ],
-                "text": "text"
-              },
-              "value": "value"
-            },
-            "display": "display"
-          }
-        ],
-        "notDoneReason": {
-          "coding": [
-            {
-              "system": "system",
-              "code": "code",
-              "Version": "Version",
-              "userSelected": true,
-              "display": "display"
-            },
-            {
-              "system": "system",
-              "code": "code",
-              "Version": "Version",
-              "userSelected": true,
-              "display": "display"
-            }
-          ],
-          "text": "text"
-        },
-        "location": {
-          "reference": "reference",
-          "identifier": {
-            "period": {
-              "start": "start",
-              "end": "end"
-            },
-            "system": "system",
-            "use": "use",
-            "assigner": {
-              "reference": "reference",
-              "display": "display"
-            },
-            "type": {
-              "coding": [
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                },
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                }
-              ],
-              "text": "text"
-            },
-            "value": "value"
-          },
-          "display": "display"
-        },
-        "category": {
-          "coding": [
-            {
-              "system": "system",
-              "code": "code",
-              "Version": "Version",
-              "userSelected": true,
-              "display": "display"
-            },
-            {
-              "system": "system",
-              "code": "code",
-              "Version": "Version",
-              "userSelected": true,
-              "display": "display"
-            }
-          ],
-          "text": "text"
-        },
-        "resourceType": "resourceType",
-        "status": "status"
       }
     },
     "Identifier": {
@@ -1748,7 +503,35 @@
           "type": "string"
         },
         "type": {
-          "$ref": "#/definitions/Identifier_type"
+          "type": "object",
+          "properties": {
+            "coding": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "system": {
+                    "type": "string"
+                  },
+                  "Version": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  },
+                  "display": {
+                    "type": "string"
+                  },
+                  "userSelected": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "text": {
+              "type": "string"
+            }
+          }
         },
         "system": {
           "type": "string"
@@ -1757,43 +540,27 @@
           "type": "string"
         },
         "period": {
-          "$ref": "#/definitions/Identifier_period"
-        },
-        "assigner": {
-          "$ref": "#/definitions/Identifier_assigner"
-        }
-      },
-      "example": {
-        "period": {
-          "start": "start",
-          "end": "end"
-        },
-        "system": "system",
-        "use": "use",
-        "assigner": {
-          "reference": "reference",
-          "display": "display"
-        },
-        "type": {
-          "coding": [
-            {
-              "system": "system",
-              "code": "code",
-              "Version": "Version",
-              "userSelected": true,
-              "display": "display"
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "string"
             },
-            {
-              "system": "system",
-              "code": "code",
-              "Version": "Version",
-              "userSelected": true,
-              "display": "display"
+            "end": {
+              "type": "string"
             }
-          ],
-          "text": "text"
+          }
         },
-        "value": "value"
+        "assigner": {
+          "type": "object",
+          "properties": {
+            "reference": {
+              "type": "string"
+            },
+            "display": {
+              "type": "string"
+            }
+          }
+        }
       }
     },
     "CodeableConcept": {
@@ -1802,31 +569,29 @@
         "coding": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Identifier_type_coding"
+            "type": "object",
+            "properties": {
+              "system": {
+                "type": "string"
+              },
+              "Version": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "display": {
+                "type": "string"
+              },
+              "userSelected": {
+                "type": "boolean"
+              }
+            }
           }
         },
         "text": {
           "type": "string"
         }
-      },
-      "example": {
-        "coding": [
-          {
-            "system": "system",
-            "code": "code",
-            "Version": "Version",
-            "userSelected": true,
-            "display": "display"
-          },
-          {
-            "system": "system",
-            "code": "code",
-            "Version": "Version",
-            "userSelected": true,
-            "display": "display"
-          }
-        ],
-        "text": "text"
       }
     },
     "Period": {
@@ -1838,17 +603,13 @@
         "end": {
           "type": "string"
         }
-      },
-      "example": {
-        "start": "start",
-        "end": "end"
       }
     },
     "Annotation": {
       "type": "object",
       "properties": {
         "authorReference": {
-          "$ref": "#/definitions/Refrence"
+          "type": "string"
         },
         "authorString": {
           "type": "string"
@@ -1859,12 +620,6 @@
         "text": {
           "type": "string"
         }
-      },
-      "example": {
-        "authorString": "authorString",
-        "authorReference": "authorReference",
-        "time": "time",
-        "text": "text"
       }
     },
     "Refrence": {
@@ -1874,306 +629,12 @@
           "type": "string"
         },
         "identifier": {
+          "type": "object",
           "$ref": "#/definitions/Identifier"
         },
         "display": {
           "type": "string"
         }
-      },
-      "example": {
-        "reference": "reference",
-        "identifier": {
-          "period": {
-            "start": "start",
-            "end": "end"
-          },
-          "system": "system",
-          "use": "use",
-          "assigner": {
-            "reference": "reference",
-            "display": "display"
-          },
-          "type": {
-            "coding": [
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              },
-              {
-                "system": "system",
-                "code": "code",
-                "Version": "Version",
-                "userSelected": true,
-                "display": "display"
-              }
-            ],
-            "text": "text"
-          },
-          "value": "value"
-        },
-        "display": "display"
-      }
-    },
-    "ProcedureItem_performer": {
-      "properties": {
-        "role": {
-          "$ref": "#/definitions/CodeableConcept"
-        },
-        "actor": {
-          "$ref": "#/definitions/Refrence"
-        },
-        "onBehalfOf": {
-          "$ref": "#/definitions/Refrence"
-        }
-      },
-      "example": {
-        "actor": {
-          "reference": "reference",
-          "identifier": {
-            "period": {
-              "start": "start",
-              "end": "end"
-            },
-            "system": "system",
-            "use": "use",
-            "assigner": {
-              "reference": "reference",
-              "display": "display"
-            },
-            "type": {
-              "coding": [
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                },
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                }
-              ],
-              "text": "text"
-            },
-            "value": "value"
-          },
-          "display": "display"
-        },
-        "role": {
-          "coding": [
-            {
-              "system": "system",
-              "code": "code",
-              "Version": "Version",
-              "userSelected": true,
-              "display": "display"
-            },
-            {
-              "system": "system",
-              "code": "code",
-              "Version": "Version",
-              "userSelected": true,
-              "display": "display"
-            }
-          ],
-          "text": "text"
-        },
-        "onBehalfOf": {
-          "reference": "reference",
-          "identifier": {
-            "period": {
-              "start": "start",
-              "end": "end"
-            },
-            "system": "system",
-            "use": "use",
-            "assigner": {
-              "reference": "reference",
-              "display": "display"
-            },
-            "type": {
-              "coding": [
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                },
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                }
-              ],
-              "text": "text"
-            },
-            "value": "value"
-          },
-          "display": "display"
-        }
-      }
-    },
-    "ProcedureItem_focalDevice": {
-      "properties": {
-        "action": {
-          "$ref": "#/definitions/CodeableConcept"
-        },
-        "manipulated": {
-          "$ref": "#/definitions/Refrence"
-        }
-      },
-      "example": {
-        "action": {
-          "coding": [
-            {
-              "system": "system",
-              "code": "code",
-              "Version": "Version",
-              "userSelected": true,
-              "display": "display"
-            },
-            {
-              "system": "system",
-              "code": "code",
-              "Version": "Version",
-              "userSelected": true,
-              "display": "display"
-            }
-          ],
-          "text": "text"
-        },
-        "manipulated": {
-          "reference": "reference",
-          "identifier": {
-            "period": {
-              "start": "start",
-              "end": "end"
-            },
-            "system": "system",
-            "use": "use",
-            "assigner": {
-              "reference": "reference",
-              "display": "display"
-            },
-            "type": {
-              "coding": [
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                },
-                {
-                  "system": "system",
-                  "code": "code",
-                  "Version": "Version",
-                  "userSelected": true,
-                  "display": "display"
-                }
-              ],
-              "text": "text"
-            },
-            "value": "value"
-          },
-          "display": "display"
-        }
-      }
-    },
-    "Identifier_type_coding": {
-      "properties": {
-        "system": {
-          "type": "string"
-        },
-        "Version": {
-          "type": "string"
-        },
-        "code": {
-          "type": "string"
-        },
-        "display": {
-          "type": "string"
-        },
-        "userSelected": {
-          "type": "boolean"
-        }
-      },
-      "example": {
-        "system": "system",
-        "code": "code",
-        "Version": "Version",
-        "userSelected": true,
-        "display": "display"
-      }
-    },
-    "Identifier_type": {
-      "properties": {
-        "coding": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Identifier_type_coding"
-          }
-        },
-        "text": {
-          "type": "string"
-        }
-      },
-      "example": {
-        "coding": [
-          {
-            "system": "system",
-            "code": "code",
-            "Version": "Version",
-            "userSelected": true,
-            "display": "display"
-          },
-          {
-            "system": "system",
-            "code": "code",
-            "Version": "Version",
-            "userSelected": true,
-            "display": "display"
-          }
-        ],
-        "text": "text"
-      }
-    },
-    "Identifier_period": {
-      "properties": {
-        "start": {
-          "type": "string"
-        },
-        "end": {
-          "type": "string"
-        }
-      },
-      "example": {
-        "start": "start",
-        "end": "end"
-      }
-    },
-    "Identifier_assigner": {
-      "properties": {
-        "reference": {
-          "type": "string"
-        },
-        "display": {
-          "type": "string"
-        }
-      },
-      "example": {
-        "reference": "reference",
-        "display": "display"
       }
     }
   }

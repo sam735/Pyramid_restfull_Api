@@ -32,7 +32,7 @@ class FhirProcedure(Base):
     not_done = Column(BIT)
     perfome_start_dt = Column(DateTime)
     perfome_end_dt = Column(DateTime)
-    json_payload = Column(String())
+    json_payload = Column(String(4096))
     # crt_dt = Column(DateTime, nullable=False, server_default=text("(getutcdate())"))
     # upd_dt = Column(DateTime, nullable=False, server_default=text("(getutcdate())"))
     user_idn = Column(Numeric(18, 0), nullable=False)
@@ -41,12 +41,13 @@ class FhirProcedure(Base):
     code_yn = relationship(u'CodeYn')
 
     def __init__(self,procedure,jsonPayload):
+        
         self.extn_id = procedure.id
         self.proc_status = procedure.status
         self.not_done = procedure.notDone
         self.perfome_start_dt = convertStringToDateTime(procedure.performedDateTime)
-        self.perfome_start_dt = (convertStringToDateTime(procedure.performedPeriod.start) if hasattr(procedure,'procedure.performedPeriod') else None)
-        self.perfome_end_dt = (convertStringToDateTime(procedure.performedPeriod.end) if hasattr(procedure,'procedure.performedPeriod') else None)
+        self.perfome_start_dt = convertStringToDateTime(procedure.performedPeriod.start) if procedure.performedPeriod else None
+        self.perfome_end_dt = convertStringToDateTime(procedure.performedPeriod.end) if procedure.performedPeriod else None
         self.json_payload = str(jsonPayload)
         self.user_idn = 2
 
@@ -157,19 +158,35 @@ class FhirIdentifier(Base):
     __tablename__ = 'fhir_identifier'
 
     fhir_identifier_idn = Column(Integer, primary_key=True)
-    proc_use = Column(String(15, u'SQL_Latin1_General_CP1_CI_AS'))
-    proc_type = Column(Numeric(18, 0))
-    identifier_system = Column(String(15, u'SQL_Latin1_General_CP1_CI_AS'))
-    proc_value = Column(String(15, u'SQL_Latin1_General_CP1_CI_AS'))
+    fhir_idn = Column(Numeric(18, 0),nullable=False)
+    source = Column(String(200, u'SQL_Latin1_General_CP1_CI_AS'), nullable=False)
+    use = Column(String(15, u'SQL_Latin1_General_CP1_CI_AS'))
+    type = Column(Numeric(18, 0))
+    identifier_system = Column(String(100, u'SQL_Latin1_General_CP1_CI_AS'))
+    value = Column(String(100, u'SQL_Latin1_General_CP1_CI_AS'))
     identifier_start_dt = Column(DateTime)
     identifier_end_dt = Column(DateTime)
-    proc_assigner = Column(Numeric(18, 0))
+    assigner = Column(Numeric(18, 0))
     # crt_dt = Column(DateTime, nullable=False, server_default=text("(getutcdate())"))
     # upd_dt = Column(DateTime, nullable=False, server_default=text("(getutcdate())"))
     user_idn = Column(Numeric(18, 0), nullable=False)
     entity_active = Column(ForeignKey(u'code_yn.yn_cd'), nullable=False, server_default=("('Y')"))
 
     code_yn = relationship(u'CodeYn')
+
+    def __init__(self,idntfr = None,proc_type = None,fhir_idn = None,source = None):
+
+        self.fhir_idn = fhir_idn
+        self.source = source
+        self.use = idntfr.use
+        self.type = proc_type
+        self.identifier_system = idntfr.system
+        self.value = idntfr.value
+        self.identifier_start_dt = convertStringToDateTime(idntfr.period.get('start')) if idntfr.period else None
+        self.identifier_end_dt = convertStringToDateTime(idntfr.period.get('end')) if idntfr.period else None
+        self.assigner = None
+        self.user_idn = 2
+
 
 class Annotation(Base):
     __tablename__ = 'fhir_note'
@@ -192,7 +209,7 @@ class Annotation(Base):
         self.fhir_idn = fhir_idn
         self.author_reference = author_reference
         self.author_string = note.authorString
-        self.note_crt_dt = convertStringToDateTime(note.time)
+        self.note_crt_dt = convertStringToDateTime(note.time) 
         self.note_text = note.text
         self.source = source
         self.user_idn = 2

@@ -19,7 +19,7 @@ def add_procedure(request):
         content_type='application/json; charset=UTF-8')
 
 def search_procedure(request):
-        import pdb;pdb.set_trace()
+        # import pdb;pdb.set_trace()
         try:
                 rec = fetch_procedure(request)
         except Exception:
@@ -29,6 +29,6 @@ def search_procedure(request):
                         content_type='application/json; charset=UTF-8')
 
         return Response(
-        status='201',
+        status='200',
         body=json.dumps(rec),
         content_type='application/json; charset=UTF-8')

@@ -15,7 +15,9 @@ def return_lower_case_of_string(str):
 
 
 def convertStringToDateTime(str):
-	if str == None:
+	try:
+		return parser.parse(str)
+	except Exception:
 		return None
 
 	else:
@@ -29,3 +31,4 @@ def to_json_obj(obj):
 		obj_str = ast.literal_eval(obj_tup)
 		l.append(obj_str)
 	return l
+
