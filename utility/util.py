@@ -1,4 +1,6 @@
 from dateutil import parser
+import json
+import ast
 
 class DictToObject(object):
 	def __init__(self, d):
@@ -18,3 +20,12 @@ def convertStringToDateTime(str):
 
 	else:
 		return parser.parse(str)
+
+def to_json_obj(obj):
+	import pdb;pdb.set_trace()
+	l = []
+	for i in range(len(obj)):
+		obj_tup = obj[i].json_payload
+		obj_str = ast.literal_eval(obj_tup)
+		l.append(obj_str)
+	return l

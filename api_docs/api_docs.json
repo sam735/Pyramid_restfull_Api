@@ -41,13 +41,6 @@
         ],
         "parameters": [
           {
-            "name": "ProcedureIdn",
-            "in": "query",
-            "description": "pass an optional ProcedureIdn for looking up Procedure",
-            "required": false,
-            "type": "string"
-          },
-          {
             "name": "skip",
             "in": "query",
             "description": "number of records to skip for pagination",
@@ -65,6 +58,126 @@
             "maximum": 10,
             "minimum": 0,
             "format": "int32"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "fetch records with given status",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "fetch records having the given subject",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "name": "performer",
+            "in": "query",
+            "description": "fetch records having the given performer id",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "name": "patient",
+            "in": "query",
+            "description": "fetch records having the given patient id",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "name": "part-of",
+            "in": "query",
+            "description": "fetch records that are a part of referenced events",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "description": "fetch records that are of given location",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "name": "encounter",
+            "in": "query",
+            "description": "fetch records that are a of given encounter",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "name": "definition",
+            "in": "query",
+            "description": "fetch records that based on given definition",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "name": "context",
+            "in": "query",
+            "description": "fetch records  of a given context",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "description": "fetch records that are a of given procedure code",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "name": "based-on",
+            "in": "query",
+            "description": "fetch records that are a of given based-on object",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "fetch records based on a given date/Period the procedure was performed",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
           }
         ],
         "responses": {
