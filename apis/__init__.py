@@ -2,6 +2,8 @@ from db import db
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import sessionmaker
+
+
 def main(global_config, **settings):
     #import pdb;pdb.set_trace()
     config = Configurator(settings=settings)

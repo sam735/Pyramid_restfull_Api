@@ -1,5 +1,7 @@
-import sys, os
+import sys
+import os
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
 
 def db(request):
     maker = request.registry.dbmaker
