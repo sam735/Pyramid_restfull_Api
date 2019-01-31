@@ -203,8 +203,10 @@ class FhirIdentifier(Base):
     identifier_start_dt = Column(DateTime)
     identifier_end_dt = Column(DateTime)
     assigner = Column(Numeric(18, 0))
-    # crt_dt = Column(DateTime, nullable=False, server_default=("(getutcdate())"))
-    # upd_dt = Column(DateTime, nullable=False, server_default=("(getutcdate())"))
+    crt_dt = Column(DateTime, nullable=False,
+                    server_default=("(getutcdate())"))
+    upd_dt = Column(DateTime, nullable=False,
+                    server_default=("(getutcdate())"))
     user_idn = Column(Numeric(18, 0), nullable=False)
     entity_active = Column(ForeignKey('code_yn.yn_cd'),
                            nullable=False, server_default=("('Y')"))
@@ -237,8 +239,10 @@ class FhirNote(Base):
     note_crt_dt = Column(DateTime)
     note_text = Column(String(100, u'SQL_Latin1_General_CP1_CI_AS'))
     source = Column(String(200, u'SQL_Latin1_General_CP1_CI_AS'))
-    # crt_dt = Column(DateTime, nullable=False, server_default=("(getutcdate())"))
-    # upd_dt = Column(DateTime, nullable=False, server_default=("(getutcdate())"))
+    crt_dt = Column(DateTime, nullable=False,
+                    server_default=("(getutcdate())"))
+    upd_dt = Column(DateTime, nullable=False,
+                    server_default=("(getutcdate())"))
     user_idn = Column(Numeric(18, 0), nullable=False)
     entity_active = Column(ForeignKey('code_yn.yn_cd'),
                            nullable=False, server_default=("('Y')"))

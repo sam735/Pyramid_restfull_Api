@@ -11,7 +11,7 @@ def insert_procedure(request):
     procedure = request.swagger_data['ProcedureItem']
 
     procedure_payload = request.json_body
-
+    
     procedure_obj = FhirProc(procedure, procedure_payload)
     request.db.add(procedure_obj)
     request.db.flush()
@@ -85,16 +85,16 @@ def insert_procedure(request):
                             'role').text, procedure_obj.fhir_proc_idn, 'procedure', 'performer')
                         request.db.add(role_obj)
                         request.db.flush()
-                        performer_obj = ProcPerformer(procedure_obj.fhir_proc_idn, role_obj.fhir_codeable_concept_idn, actor_obj.reference_idn,
-                                                      onBehalfOf_idn)
+                        performer_obj = ProcPerformer(procedure_obj.fhir_proc_idn, role_obj.fhir_codeable_concept_idn,
+                                                      actor_obj.reference_idn, onBehalfOf_idn)
                         request.db.add(performer_obj)
                 else:
                     role_obj = FhirCodeableConcept(DictToObject({}), performer.get(
                         'role').text, procedure_obj.fhir_proc_idn, 'procedure', 'performer')
                     request.db.add(role_obj)
                     request.db.flush()
-                    performer_obj = ProcPerformer(procedure_obj.fhir_proc_idn, role_obj.fhir_codeable_concept_idn, actor_obj.reference_idn,
-                                                  onBehalfOf_idn)
+                    performer_obj = ProcPerformer(procedure_obj.fhir_proc_idn, role_obj.fhir_codeable_concept_idn,
+                                                  actor_obj.reference_idn, onBehalfOf_idn)
                     request.db.add(performer_obj)
 
             else:
@@ -138,7 +138,7 @@ def insert_procedure(request):
 
 def fetch_procedure(request):
     param_obj = request.swagger_data
-
+    import pdb;pdb.set_trace()
     # for handling multiple params
     if(param_obj['subject'] and param_obj['date']):
 
@@ -162,7 +162,7 @@ def fetch_procedure(request):
     if(param_obj['subject']):
         sub = request.db.query(FhirProc.json_payload).\
             filter(FhirProc.fhir_proc_idn == FhirReference.fhir_idn).\
-            filter(FhirReference.attribute == 'subject').filter(FhirReference.FhirReference == param_obj['subject']).\
+            filter(FhirReference.attribute == 'subject').filter(FhirReference.reference == param_obj['subject']).\
             all()
         sub_json = to_json_obj(sub)
         return sub_json
@@ -170,8 +170,8 @@ def fetch_procedure(request):
     if(param_obj['performer']):
         perf = request.db.query(FhirProc.json_payload).\
             filter(FhirProc.fhir_proc_idn == FhirReference.fhir_idn).\
-            filter(FhirReference.attribute == 'performer').filter(FhirReference.FhirReference == param_obj['performer']).\
-            filter(FhirReference.code_FhirReference_idn == ProcPerformer.proc_actor).\
+            filter(FhirReference.attribute == 'performer').filter(FhirReference.reference == param_obj['performer']).\
+            filter(FhirReference.reference_idn == ProcPerformer.proc_actor).\
             all()
         perf_json = to_json_obj(perf)
         return perf_json
@@ -179,7 +179,7 @@ def fetch_procedure(request):
     if(param_obj['patient']):
         patient = request.db.query(FhirProc.json_payload).\
             filter(FhirProc.fhir_proc_idn == FhirReference.fhir_idn).\
-            filter(FhirReference.attribute == 'patient').filter(FhirReference.FhirReference == param_obj['patient']).\
+            filter(FhirReference.attribute == 'patient').filter(FhirReference.reference == param_obj['patient']).\
             all()
         patient_json = to_json_obj(patient)
         return patient_json
@@ -187,7 +187,7 @@ def fetch_procedure(request):
     if(param_obj['part-of']):
         partOf = request.db.query(FhirProc.json_payload).\
             filter(FhirProc.fhir_proc_idn == FhirReference.fhir_idn).\
-            filter(FhirReference.attribute == 'partOf').filter(FhirReference.FhirReference == param_obj['part-of']).\
+            filter(FhirReference.attribute == 'partOf').filter(FhirReference.reference == param_obj['part-of']).\
             all()
         partOf_json = to_json_obj(partOf)
         return partOf_json
@@ -195,7 +195,7 @@ def fetch_procedure(request):
     if(param_obj['location']):
         loc = request.db.query(FhirProc.json_payload).\
             filter(FhirProc.fhir_proc_idn == FhirReference.fhir_idn).\
-            filter(FhirReference.attribute == 'location').filter(FhirReference.FhirReference == param_obj['location']).\
+            filter(FhirReference.attribute == 'location').filter(FhirReference.reference == param_obj['location']).\
             all()
         loc_json = to_json_obj(loc)
         return loc_json
@@ -203,7 +203,7 @@ def fetch_procedure(request):
     if(param_obj['encounter']):
         enc = request.db.query(FhirProc.json_payload).\
             filter(FhirProc.fhir_proc_idn == FhirReference.fhir_idn).\
-            filter(FhirReference.attribute == 'encounter').filter(FhirReference.FhirReference == param_obj['encounter']).\
+            filter(FhirReference.attribute == 'encounter').filter(FhirReference.reference == param_obj['encounter']).\
             all()
         enc_json = to_json_obj(enc)
         return enc_json
@@ -219,7 +219,7 @@ def fetch_procedure(request):
     if(param_obj['definition']):
         definition = request.db.query(FhirProc.json_payload).\
             filter(FhirProc.fhir_proc_idn == FhirReference.fhir_idn).\
-            filter(FhirReference.attribute == 'definition').filter(FhirReference.FhirReference == param_obj['definition']).\
+            filter(FhirReference.attribute == 'definition').filter(FhirReference.reference == param_obj['definition']).\
             all()
         definition_json = to_json_obj(definition)
         return definition_json
@@ -227,7 +227,7 @@ def fetch_procedure(request):
     if(param_obj['context']):
         context = request.db.query(FhirProc.json_payload).\
             filter(FhirProc.fhir_proc_idn == FhirReference.fhir_idn).\
-            filter(FhirReference.attribute == 'context').filter(FhirReference.FhirReference == param_obj['context']).\
+            filter(FhirReference.attribute == 'context').filter(FhirReference.reference == param_obj['context']).\
             all()
         context_json = to_json_obj(context)
         return context_json
@@ -243,7 +243,7 @@ def fetch_procedure(request):
     if(param_obj['based-on']):
         basedOn = request.db.query(FhirProc.json_payload).\
             filter(FhirProc.fhir_proc_idn == FhirCodeableConcept.fhir_idn).\
-            filter(FhirReference.attribute == 'basedOn').filter(FhirReference.code == param_obj['based-on']).\
+            filter(FhirReference.attribute == 'basedOn').filter(FhirReference.reference == param_obj['based-on']).\
             all()
         basedOn_json = to_json_obj(basedOn)
         return basedOn_json
