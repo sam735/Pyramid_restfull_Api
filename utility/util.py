@@ -7,6 +7,7 @@ class DictToObject(object):
     def __init__(self, d):
         self.__dict__ = d
 
+
     def __getattr__(self, item):
         return None
 
@@ -23,7 +24,6 @@ def convertStringToDateTime(str):
 
     else:
         return parser.parse(str)
-
 
 def to_json_obj(obj):
     l = []
