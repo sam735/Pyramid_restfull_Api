@@ -10,5 +10,3 @@ def includeme(config):
                      request_method="GET")
     config.add_view(search_procedure, renderer="json",
                     route_name='fetch_procedure')
-    # config.add_route('remove_procedure', 'api/v1.0/procedures',request_method="GET")
-    # config.add_view(delete_procedure, renderer="json", route_name='remove_procedure')
