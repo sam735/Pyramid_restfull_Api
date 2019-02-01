@@ -74,8 +74,6 @@ def insert_allergies(request):
 
 	if allergies.reaction != None:
 		for reaction in allergies.reaction:
-			import pdb;pdb.set_trace()
-
 			if reaction.get('description') or reaction.get('onset') or reaction.get('severity'):
 				allergy_reaction_obj = AllergyReaction(((reaction.get('substance').coding[0].display if reaction.get('substance').coding else None) if reaction.get('substance') else None),reaction.get('onset'),reaction.get('severity'),allergies_obj.fhir_allergy_idn)
 				request.db.add(allergy_reaction_obj)
@@ -115,7 +113,6 @@ def insert_allergies(request):
 	request.db.flush()
 
 def fetch_allergies(request):
-	import pdb;pdb.set_trace()
 
 	param_obj = request.swagger_data
 
@@ -136,7 +133,6 @@ def fetch_allergies(request):
 
 	#generate_filters : Generates the filter using sqlalchemy filter lib
 	def generate_filters():
-		import pdb;pdb.set_trace()
 		obj_model= {'model':'','field': '', 'op': '' ,'value': ''}
 		for key,val in param_obj.items():
 			if param_obj[key] != None:

@@ -3,7 +3,6 @@ from pyramid.response import Response
 from apis.procedure.service import insert_procedure,fetch_procedure
 
 def add_procedure(request):
-	#import pdb;pdb.set_trace()
 	try:
 		insert_procedure(request)
 	except Exception:
@@ -19,7 +18,6 @@ def add_procedure(request):
 	content_type='application/json; charset=UTF-8')
 
 def search_procedure(request):
-	# import pdb;pdb.set_trace()
 	try:
 		rec = fetch_procedure(request)
 	except Exception:

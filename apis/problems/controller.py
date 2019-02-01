@@ -3,7 +3,6 @@ from pyramid.response import Response
 import json
 
 def add_problem(request):
-	import pdb;pdb.set_trace()
 	try:
 		insert_problems(request)	
 
@@ -21,7 +20,6 @@ def add_problem(request):
 
 def get_problem(request):
 	try:
-		import pdb;pdb.set_trace() 
 		rec = fetch_problems(request)
 	except Exception:
 		return Response(

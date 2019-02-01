@@ -16,7 +16,6 @@ from sqlalchemy import and_
 
 
 def insert_problems(request):
-	import pdb;pdb.set_trace() 
 	problem = request.swagger_data['problem']
 	problem_payload = request.json_body
 	problem_obj = FhirCondition(problem, problem_payload)
@@ -64,7 +63,6 @@ def insert_problems(request):
 	stage_obj = None
 
 	if problem.stage != None:
-		import pdb;pdb.set_trace()
 		if problem.stage.get('summary') != None:
 			if problem.stage.get('summary').coding != None:
 				for code in problem.stage.get('summary').coding:
@@ -82,7 +80,6 @@ def insert_problems(request):
 	evidence_obj = None
 
 	if problem.evidence != None:
-		import pdb;pdb.set_trace()
 		for obj in problem.evidence:
 			if obj.get('code') != None:
 				for code in obj.get('code'):
@@ -98,7 +95,6 @@ def insert_problems(request):
 	request.db.flush()
 	
 def fetch_problems(request):
-	import pdb;pdb.set_trace()
 
 	param_obj = request.swagger_data
 
@@ -117,7 +113,6 @@ def fetch_problems(request):
 
 	#generate_filters : Generates the filter using sqlalchemy filter lib
 	def generate_filters():
-		import pdb;pdb.set_trace()
 		obj_model= {'model':'','field': '', 'op': '' ,'value': ''}
 		for key,val in param_obj.items():
 			if param_obj[key] != None:
@@ -148,8 +143,6 @@ def fetch_problems(request):
 
 	#generate_result : Generates result for GET query
 	def generate_result(filtered_spec):
-		import pdb;pdb.set_trace() 
-
 		query = FhirCondition.base_query_init(request)
 
 		if 'CodeableConcept' in model_list:         

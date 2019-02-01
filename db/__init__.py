@@ -1,5 +1,7 @@
-import sys, os
+import sys
+import os
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
 
 def db(request):
 	maker = request.registry.dbmaker
@@ -13,4 +15,4 @@ def db(request):
 		session.close()
 	request.add_finished_callback(cleanup)
 
-	return session
+    return session

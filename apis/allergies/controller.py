@@ -3,7 +3,6 @@ from pyramid.response import Response
 from apis.allergies.service import insert_allergies, fetch_allergies
 
 def add_allergy(request):
-	import pdb;pdb.set_trace()
 	try:
 		insert_allergies(request)
 	except Exception:
@@ -19,7 +18,6 @@ def add_allergy(request):
 		content_type='application/json; charset=UTF-8')
 
 def get_allergy(request):
-	import pdb;pdb.set_trace()
 	try:
 		rec =fetch_allergies(request)
 	except Exception:

@@ -47,7 +47,6 @@ class FhirCondition(Base):
 
 
 	def __init__(self,problem,jsonPayload):
-		import pdb;pdb.set_trace()
 		self.extn_id = problem.id
 		self.clinical_status = problem.clinicalStatus
 		self.verification_status = problem.verificationStatus
@@ -57,7 +56,7 @@ class FhirCondition(Base):
 		self.onset_string = problem.onsetString
 		self.onset_range = convertStringToDateTime(problem.onsetRange)
 		self.abatement_datetime = convertStringToDateTime(problem.abatementDateTime)
-		self.abatement_age = problem.abatementAge
+		self.abatement_age = if problem.abatementAge == true ?
 		self.abatement_boolean = (problem.abatementBoolean)
 		self.abatement_period = convertStringToDateTime(problem.abatementPeriod)
 		self.abatement_string =(problem.abatementString)
@@ -94,7 +93,6 @@ class FhirCodeableConcept(Base):
 	code_yn = relationship(u'CodeYn')
 
 	def __init__(self,codeObj,text,fhir_idn,source,attribute):
-		import pdb;pdb.set_trace()
 		self.codeable_system = codeObj.system
 		self.codeable_version = codeObj.version
 		self.code = codeObj.code
@@ -131,7 +129,6 @@ class Reference(Base):
 
 class FhirIdentifier(Base):
 	__tablename__ = 'fhir_identifier'
-	import pdb;pdb.set_trace()
 
 	fhir_identifier_idn = Column(Integer, primary_key=True)
 	fhir_idn = Column(Numeric(18, 0),nullable=False)

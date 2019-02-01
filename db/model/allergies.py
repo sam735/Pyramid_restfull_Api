@@ -46,7 +46,6 @@ class FhirAllergy(Base):
 	code_yn = relationship(u'CodeYn')
 
 	def __init__(self,allergies,jsonPayload):
-		import pdb;pdb.set_trace()
 		self.extn_id = allergies.id
 		self.clinical_status = allergies.clinicalStatus
 		self.verification_status = allergies.verificationStatus
@@ -92,7 +91,6 @@ class FhirCodeableConcept(Base):
 	code_yn = relationship(u'CodeYn')
 
 	def __init__(self,codeObj,text,fhir_idn,source,attribute):
-		import pdb;pdb.set_trace()
 		self.codeable_system = codeObj.system
 		self.codeable_version = codeObj.version
 		self.code = codeObj.code
@@ -129,7 +127,6 @@ class Reference(Base):
 
 class FhirIdentifier(Base):
 	__tablename__ = 'fhir_identifier'
-	import pdb;pdb.set_trace()
 
 	fhir_identifier_idn = Column(Integer, primary_key=True)
 	fhir_idn = Column(Numeric(18, 0),nullable=False)
