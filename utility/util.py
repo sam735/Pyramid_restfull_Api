@@ -3,6 +3,7 @@ import json
 import ast
 
 class DictToObject(object):
+	import pdb;pdb.set_trace()
 	def __init__(self, d):
 		self.__dict__ = d
 
@@ -31,4 +32,7 @@ def to_json_obj(obj):
 		obj_str = ast.literal_eval(obj_tup)
 		l.append(obj_str)
 	return l
+
+
+
 

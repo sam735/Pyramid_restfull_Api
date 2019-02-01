@@ -1,0 +1,702 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is Allergies API",
+    "version": "1.0.0",
+    "title": "Allergies API",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+   "host": "localhost:6547",
+  "basePath": "/api/v1.0/",
+  "tags": [
+    {
+      "name": "allergies",
+      "description": "Perform all valid operations on allergies"
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/allergies": {
+      "post": {
+        "tags": [
+          "allergies"
+        ],
+        "summary": "Add a new allergy to the database",
+        "description": "This API adds a new allergy record to the database",
+        "operationId": "addAllergy",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Allergy object that needs to be added to the database",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Allergies"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully added"
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "allergies"
+        ],
+        "summary": "Update an existing allergies record",
+        "description": "This record updates an existing allergies record",
+        "operationId": "updateAllergy",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Allergy object that needs to be updated to the database",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Allergies"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid allergy ID supplied"
+          },
+          "404": {
+            "description": "Allergy not found"
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "allergies"
+        ],
+        "summary": "Fetches allergies and displays based on sort parameter provided",
+        "operationId": "getAllergy",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "criticality",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "patient",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Active allergies to be fetched for the patient ID"
+          },
+           {
+            "name": "identifier",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "External ids for this item"
+          },
+          {
+            "name": "asserter",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Code that identifies the allergy or intolerance"
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Source of the information about the allergy"
+          },
+          {
+            "name": "onset",
+            "in": "query",
+            "description": "range of dates for when the allergy first affected the patient",
+            "required": false,
+            "type": "string",
+            "x-example": "2012-11-07T00:00:00.000Z"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "  Date record was believed accurate",
+            "required": false,
+            "type": "string",
+            "x-example": "2012-11-07T00:00:00.000Z"
+          },
+          {
+            "name": " last-date",
+            "in": "query",
+            "description": "Date(/time) of last known occurrence of a reaction",
+            "required": false,
+            "type": "string",
+            "x-example": "2012-11-07T00:00:00.000Z"
+          },
+          {
+            "name": "clinical-status",
+            "in": "query",
+            "description": "status of the allergy",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "resolved"
+            ]
+          },
+          {
+            "name": "severity",
+            "in": "query",
+            "description": "status of the allergy",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "mild",
+              "moderate",
+              "severe"
+            ]
+          },
+          {
+            "name": "verification-status",
+            "in": "query",
+            "description": "verification status of the allergy",
+            "required": false,
+            "type": "string",
+            "enum": [
+               "unconfirmed",
+               "confirmed",
+               "refuted",
+               "entered-in-error"
+            ]
+          },
+          {
+            "name": "recorder",
+            "in": "query",
+            "description": "Who recorded the sensitivity",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "manifestation",
+            "in": "query",
+            "description": "Clinical symptoms/signs associated with the Event",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "route",
+            "in": "query",
+            "description": "How the subject was exposed to the substance",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Category of food for which the patient is allergic to",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "food",
+              "medication",
+              "environment",
+              "biologic"
+            ]
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "type of allergy",
+            "required": false,
+            "type": "string",
+            "enum": [
+                "allergy",
+                "intolerance" 
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Allergies"
+              }
+            }
+          },
+          "404": {
+            "description": "No record found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "allergies"
+        ],
+        "summary": "Deletes a allergies record",
+        "description": "This API deletes a allergies record based on the med_idn passed",
+        "operationId": "deleteAllergy",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "allergy_id",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int64",
+            "x-example": 227037002
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Record deleted successfully"
+          },
+          "400": {
+            "description": "Invalid allergy ID supplied"
+          },
+          "404": {
+            "description": "Allergy ID not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Allergies": {
+      "type": "object",
+      "required": [
+        "verificationStatus",
+        "patient"
+      ],
+      "properties": {
+        "identifier": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Identifier"
+          },
+          "description": "External ids for this item"
+        },
+        "clinicalStatus": {
+          "type": "string",
+          "format": "code",
+          "enum": [
+            "active",
+            "inactive",
+            "resolved"
+          ],
+          "description": "This field SHALL be entered if verificationStatus is not 'entered-in-error'. This field SHALL NOT be entered if verificationStatus is  'entered-in-error'",
+          "x-example": "active"
+        },
+        "verificationStatus": {
+          "type": "string",
+          "format": "code",
+          "enum": [
+            "unconfirmed",
+            "confirmed",
+            "refuted",
+            "entered-in-error"
+          ],
+          "x-example": "confirmed"
+        },
+        "type": {
+          "type": "string",
+          "description": "code",
+          "enum": [
+            "allergy",
+            "intolerance - Underlying mechanism (if known)"
+          ],
+          "x-example": "allergy"
+        },
+        "category": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "code",
+            "enum": [
+              "food",
+              "medication",
+              "environment",
+              "biologic"
+            ],
+            "x-example": "food"
+          }
+        },
+        "criticality": {
+          "type": "string",
+          "format": "code",
+          "enum": [
+            "low",
+            "high",
+            "unable-to-assess"
+          ],
+          "x-example": "low"
+        },
+        "code": {
+          "type": "object",
+          "$ref": "#/definitions/CodeableConcept",
+          "description": "Code that identifies the allergy or intolerance",
+          "x-example": "227037002 (fish allergy)"
+        },
+        "patient": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence",
+          "description": "Who the sensitivity is for",
+          "x-example": "Patient"
+        },
+        "onsetDateTime": {
+          "type": "string",
+          "x-example": "2015-08-06T00:00:00-06:00"
+        },
+        "onsetAge": {
+          "type": "number",
+          "format": "Age",
+          "minimum": 1,
+          "x-example": 46
+        },
+        "onsetPeriod": {
+          "type": "object",
+          "$ref": "#/definitions/Period"
+        },
+        "onsetRange": {
+          "type": "object",
+          "$ref": "#/definitions/Range"
+        },
+        "onsetString": {
+          "type": "string"
+        },
+        "assertedDate": {
+          "type": "string",
+          "description": "Date record was believed accurate"
+        },
+        "recorder": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence",
+          "description": "Who recorded the sensitivity"
+        },
+        "asserter": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence",
+          "description": "Source of the information about the allergy"
+        },
+        "lastOccurrence": {
+          "type": "string",
+          "description": "Date(/time) of last known occurrence of a reaction"
+        },
+        "note": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Annotation"
+          }
+        },
+        "reaction": {
+          "type": "array",
+          "description": "Adverse Reaction Events linked to exposure to substance",
+          "items": {
+            "type": "object",
+            "required": [
+              "manifestation"
+            ],
+            "properties": {
+              "substance": {
+                "type": "object",
+                "$ref": "#/definitions/CodeableConcept",
+                "description": "Specific substance or pharmaceutical product considered to be responsible for event"
+              },
+              "manifestation": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/CodeableConcept"
+                },
+                "description": "Clinical symptoms/signs associated with the Event"
+              },
+              "description": {
+                "type": "string",
+                "description": "Description of the event as a whole",
+                "x-example": "allergy is to fresh fish. Tolerates canned fish"
+              },
+              "onset": {
+                "type": "string",
+                "description": "Date(/time) when manifestations showed",
+                "x-example": "2015-08-06T00:00:00-06:00"
+              },
+              "severity": {
+                "type": "string",
+                "format": "code",
+                "enum": [
+                  "mild",
+                  "moderate",
+                  "severe"
+                ],
+                "x-example": "mild"
+              },
+              "exposureRoute": {
+                "type": "object",
+                "$ref": "#/definitions/CodeableConcept",
+                "description": "How the subject was exposed to the substance",
+                "x-example": "Dietary intake"
+              },
+              "note": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Annotation"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Coding": {
+      "type": "object",
+      "properties": {
+        "system": {
+          "type": "string",
+          "format": "uri",
+          "description": "This is a URI that represents the identity of the terminology system",
+          "x-example": "http://snomed.info/sct"
+        },
+        "version": {
+          "type": "string",
+          "description": "Version of the system - if relevant"
+        },
+        "code": {
+          "type": "string",
+          "format": "code",
+          "description": "Symbol in syntax defined by the system",
+          "x-example": 227037002
+        },
+        "display": {
+          "type": "string",
+          "description": "Representation defined by the system",
+          "x-example": "Fish - dietary (substance)"
+        },
+        "userSelected": {
+          "type": "boolean",
+          "description": "If this coding was chosen directly by the user"
+        }
+      }
+    },
+    "CodeableConcept": {
+      "type": "object",
+      "properties": {
+        "coding": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Coding",
+            "description": "Code defined by a terminology system"
+          }
+        },
+        "text": {
+          "type": "string",
+          "description": "Plain text representation of the concept",
+          "x-example": "Allergic to fresh fish. Tolerates canned fish"
+        }
+      }
+    },
+    "Refrence": {
+      "type": "object",
+      "format": "object",
+      "properties": {
+        "reference": {
+          "type": "string",
+          "description": "Literal reference, Relative, internal or absolute URL"
+        },
+        "identifier": {
+          "type": "object",
+          "$ref": "#/definitions/Identifier",
+          "description": "Logical reference, when literal reference is not known"
+        },
+        "display": {
+          "type": "string",
+          "description": "Text alternative for the resource"
+        }
+      }
+    },
+    "Identifier": {
+      "type": "object",
+      "properties": {
+        "use": {
+          "type": "string",
+          "enum": [
+            "usual",
+            "official",
+            "temp",
+            "secondary (If known)"
+          ],
+          "x-example": "usual"
+        },
+        "type": {
+          "type": "object",
+          "$ref": "#/definitions/CodeableConcept",
+          "description": "Description of identifier"
+        },
+        "system": {
+          "type": "string",
+          "format": "uri",
+          "description": "The namespace for the identifier value"
+        },
+        "value": {
+          "type": "string",
+          "description": "The value that is unique"
+        },
+        "period": {
+          "type": "object",
+          "$ref": "#/definitions/Period",
+          "description": "Time period when id is/was valid for use"
+        },
+        "assigner": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence",
+          "description": "Organization that issued id (may be just text)"
+        }
+      }
+    },
+    "Period": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Starting time with inclusive boundary",
+          "x-example": "F"
+        },
+        "end": {
+          "type": "string",
+          "format": "date-time",
+          "description": "End time with inclusive boundary, if not ongoing"
+        }
+      }
+    },
+    "Quantity": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number",
+          "multipleOf": 0.001,
+          "description": "Numerical value (with implicit precision)"
+        },
+        "comparator": {
+          "type": "string",
+          "enum": [
+            "<",
+            "<=",
+            ">=",
+            ">"
+          ],
+          "x-example": "<"
+        },
+        "unit": {
+          "type": "string",
+          "description": "Unit representation",
+          "x-example": "lbs"
+        },
+        "system": {
+          "type": "string",
+          "format": "uri",
+          "description": "System that defines coded unit form",
+          "x-example": "http://unitsofmeasure.org"
+        },
+        "code": {
+          "type": "string",
+          "description": "Coded form of the unit",
+          "x-example": [
+            "lbs_av"
+          ]
+        }
+      }
+    },
+    "Range": {
+      "type": "object",
+      "properties": {
+        "low": {
+          "type": "object",
+          "$ref": "#/definitions/Quantity",
+          "description": "Low limit",
+          "x-example": 0.1
+        },
+        "high": {
+          "type": "object",
+          "$ref": "#/definitions/Quantity",
+          "description": "High limit",
+          "x-example": 5
+        }
+      }
+    },
+    "Annotation": {
+      "type": "object",
+      "required": [
+        "text"
+      ],
+      "properties": {
+        "authorReference": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence"
+        },
+        "authorString": {
+          "type": "string"
+        },
+        "time": {
+          "type": "string",
+          "description": "When the annotation was made",
+          "x-example": "04:20:00-06:00"
+        },
+        "text": {
+          "type": "string",
+          "description": "The annotation  - text content"
+        }
+      }
+    },
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

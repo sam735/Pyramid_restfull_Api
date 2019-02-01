@@ -23,41 +23,55 @@ class CodeYn(Base):
 	yn_idn = Column(Numeric(18, 0), nullable=False)
 
 
-class FhirProcedure(Base):
-	__tablename__ = 'fhir_proc'
+class FhirAllergy(Base):
+	__tablename__ = 'fhir_allergy'
 
-	fhir_proc_idn = Column(Integer,primary_key=True)
-	extn_id = Column(String(200, u'SQL_Latin1_General_CP1_CI_AS'))
-	proc_status = Column(String(20, u'SQL_Latin1_General_CP1_CI_AS'), nullable=False)
-	not_done = Column(BIT)
-	perfome_start_dt = Column(DateTime)
-	perfome_end_dt = Column(DateTime)
+	fhir_allergy_idn = Column(Integer, primary_key=True)
+	extn_id = Column(String(100, u'SQL_Latin1_General_CP1_CI_AS'))
+	clinical_status = Column(String(100, u'SQL_Latin1_General_CP1_CI_AS'))
+	verification_status = Column(String(100, u'SQL_Latin1_General_CP1_CI_AS'))
+	type = Column(String(100, u'SQL_Latin1_General_CP1_CI_AS'))
+	criticality = Column(String(100, u'SQL_Latin1_General_CP1_CI_AS'))
+	onset_datetime = Column(DateTime)
+	onset_age = Column(Integer)
+	onset_period = Column(DateTime)
+	onset_range = Column(DateTime)
+	onset_string = Column(String(100, u'SQL_Latin1_General_CP1_CI_AS'))
+	asserted_date = Column(DateTime)
+	last_occurrence = Column(DateTime)
 	json_payload = Column(String())
 	user_idn = Column(Numeric(18, 0), nullable=False)
 	entity_active = Column(ForeignKey(u'code_yn.yn_cd'), nullable=False, server_default=("('Y')"))
 
 	code_yn = relationship(u'CodeYn')
 
-	def __init__(self,proc,jsonPayload):
+	def __init__(self,allergies,jsonPayload):
 		import pdb;pdb.set_trace()
-		self.extn_id = proc.id
-		self.proc_status = proc.status
-		self.not_done = proc.notDone
-		self.perfome_start_dt = convertStringToDateTime(proc.performedDateTime)
-		self.perfome_start_dt = (convertStringToDateTime(proc.performedPeriod.start) if hasattr(proc,'proc.performedPeriod') else None)
-		self.perfome_end_dt = (convertStringToDateTime(proc.performedPeriod.end) if hasattr(proc,'proc.performedPeriod') else None)
+		self.extn_id = allergies.id
+		self.clinical_status = allergies.clinicalStatus
+		self.verification_status = allergies.verificationStatus
+		self.type = allergies.type
+		self.criticality = allergies.criticality
+		self.onset_datetime = convertStringToDateTime(allergies.onsetDateTime)
+		self.onset_age = allergies.onsetAge
+		self.onset_period = convertStringToDateTime(allergies.onsetPeriod)
+		self.onset_range = convertStringToDateTime(allergies.onsetRange)
+		self.onset_string = allergies.onsetString
+		self.asserted_date = convertStringToDateTime(allergies.assertedDate)
+		self.last_occurrence = convertStringToDateTime(allergies.lastOccurrence)
 		self.json_payload = str(jsonPayload)
 		self.user_idn = 2
 
 	def base_query_init(request):
-		query = (request.db.query(FhirProcedureedure.json_payload.distinct())
-					.outerjoin(ProcedurePerformer, and_(ProcedurePerformer.fhir_proc_idn == FhirProcedureedure.fhir_proc_idn))
-					.outerjoin(ProcedureFocaldevice, and_(ProcedureFocaldevice.fhir_proc_idn == FhirProcedureedure.fhir_proc_idn))
-					.outerjoin(FhirIdentifier, and_(FhirIdentifier.fhir_idn == FhirProcedureedure.fhir_proc_idn,
-													FhirIdentifier.source == 'procedure'))
-					.outerjoin(Annotation, and_(Annotation.fhir_idn == FhirProcedureedure.fhir_proc_idn,
-											Annotation.source =='procedure')))
+		query = (request.db.query(FhirAllergy.json_payload)
+					.outerjoin(FhirIdentifier, and_(FhirIdentifier.fhir_idn == FhirAllergy.fhir_allergy_idn,
+													FhirIdentifier.source == 'allergy'))
+					.outerjoin(Annotation, and_(Annotation.fhir_idn == FhirAllergy.fhir_allergy_idn,
+											Annotation.source =='allergy'))
+					.outerjoin(AllergyReaction, and_(AllergyReaction.fhir_allergy_idn == FhirAllergy.fhir_allergy_idn))
+					.outerjoin(AllergyCategory, and_(AllergyCategory.fhir_allergy_idn == FhirAllergy.fhir_allergy_idn)))
 		return query
+
 
 class FhirCodeableConcept(Base):
 	__tablename__ = 'fhir_codeable_concept'
@@ -77,7 +91,7 @@ class FhirCodeableConcept(Base):
 
 	code_yn = relationship(u'CodeYn')
 
-	def __init__(self,codeObj = None,text = None,fhir_idn = None,source = None,attribute = None):
+	def __init__(self,codeObj,text,fhir_idn,source,attribute):
 		import pdb;pdb.set_trace()
 		self.codeable_system = codeObj.system
 		self.codeable_version = codeObj.version
@@ -113,47 +127,9 @@ class Reference(Base):
 		self.user_idn = 2
 
 
-class ProcedurePerformer(Base):
-	__tablename__ = 'proc_performer'
-
-	proc_perfome_idn = Column(Integer, primary_key=True)
-	fhir_proc_idn = Column(ForeignKey(u'fhir_proc.fhir_proc_idn'))
-	proc_role = Column(Numeric(18, 0))
-	proc_actor = Column(Numeric(18, 0), nullable=False)
-	proc_onbehalf = Column(Numeric(18, 0))
-	user_idn = Column(Numeric(18, 0), nullable=False)
-	entity_active = Column(ForeignKey(u'code_yn.yn_cd'), nullable=False, server_default=("('Y')"))
-
-	code_yn = relationship(u'CodeYn')
-	fhir_proc = relationship(u'FhirProcedure')
-
-	def __init__(self,fhir_proc_idn = None, proc_role = None, proc_actor = None, proc_onbehalf = None):
-		self.fhir_proc_idn = fhir_proc_idn
-		self.proc_role = proc_role
-		self.proc_actor = proc_actor
-		self.proc_onbehalf = proc_onbehalf
-		self.user_idn = 2
-
-class ProcedureFocaldevice(Base):
-	__tablename__ = 'proc_focaldevice'
-
-	proc_focaldevice_idn = Column(Integer, primary_key=True)
-	fhir_proc_idn = Column(ForeignKey(u'fhir_proc.fhir_proc_idn'))
-	proc_action = Column(Numeric(18, 0))
-	proc_manipulated = Column(Numeric(18, 0), nullable=False)
-	user_idn = Column(Numeric(18, 0), nullable=False)
-	entity_active = Column(ForeignKey(u'code_yn.yn_cd'), nullable=False, server_default=("('Y')"))
-	code_yn = relationship(u'CodeYn')
-	fhir_proc = relationship(u'FhirProcedure')
-
-	def __init__(self,fhir_proc_idn = None, proc_action = None, proc_manipulated = None):
-		self.fhir_proc_idn = fhir_proc_idn
-		self.proc_action = proc_action
-		self.proc_manipulated = proc_manipulated
-		self.user_idn = 2
-
 class FhirIdentifier(Base):
 	__tablename__ = 'fhir_identifier'
+	import pdb;pdb.set_trace()
 
 	fhir_identifier_idn = Column(Integer, primary_key=True)
 	fhir_idn = Column(Numeric(18, 0),nullable=False)
@@ -170,12 +146,12 @@ class FhirIdentifier(Base):
 
 	code_yn = relationship(u'CodeYn')
 
-	def __init__(self,idntfr = None,proc_type = None,fhir_idn = None,source = None):
+	def __init__(self,idntfr,proc_type,fhir_idn,source):
 
 		self.fhir_idn = fhir_idn
 		self.source = source
 		self.use = idntfr.use
-		self.type = proc_type
+		self.type = 'allergy'
 		self.identifier_system = idntfr.system
 		self.value = idntfr.value
 		self.identifier_start_dt = convertStringToDateTime(idntfr.period.get('start')) if idntfr.period else None
@@ -206,4 +182,36 @@ class Annotation(Base):
 		self.note_crt_dt = convertStringToDateTime(note.time) 
 		self.note_text = note.text
 		self.source = source
+		self.user_idn = 2
+
+class AllergyReaction(Base):
+	__tablename__ = 'allergy_reaction'
+
+	allergy_reaction_idn = Column(Integer, primary_key=True)
+	fhir_allergy_idn = Column(ForeignKey(u'fhir_allergy.fhir_allergy_idn'), nullable=False)
+	description = Column(String(2000, u'SQL_Latin1_General_CP1_CI_AS'))
+	onset = Column(DateTime)
+	severity = Column(String(100, u'SQL_Latin1_General_CP1_CI_AS'))
+	user_idn = Column(Numeric(18, 0), nullable=False)
+	entity_active = Column(ForeignKey(u'code_yn.yn_cd'), nullable=False, server_default=("('Y')"))
+
+	def __init__(self,description,onset,severity ,fhir_idn):
+		self.fhir_allergy_idn =  fhir_idn
+		self.description = description
+		self.onset = onset
+		self.severity = severity
+		self.user_idn = 2
+
+class AllergyCategory(Base):
+	__tablename__ = 'allergy_category'
+
+	allergy_category_idn = Column(Integer,primary_key=True)
+	fhir_allergy_idn = Column(ForeignKey(u'fhir_allergy.fhir_allergy_idn'), nullable=False)
+	category = Column(String(100, u'SQL_Latin1_General_CP1_CI_AS'), nullable=False)
+	user_idn = Column(Numeric(18, 0), nullable=False)
+	entity_active = Column(ForeignKey(u'code_yn.yn_cd'), nullable=False, server_default=("('Y')"))
+
+	def __init__(self,category,fhir_idn):
+		self.fhir_allergy_idn =  fhir_idn
+		self.category = category
 		self.user_idn = 2
