@@ -1,3 +1,4 @@
+
 from db.model.procedure import (FhirProc, CodeYn, FhirCodeableConcept, FhirReference, ProcPerformer,
                                 ProcFocaldevice, FhirIdentifier, FhirNote)
 from utility.util import (DictToObject, to_json_obj)
@@ -5,13 +6,16 @@ from utility.util import (DictToObject, to_json_obj)
 from db.common import(insert_to_identifier, insert_to_FhirNote)
 
 import json
+from sqlalchemy import and_
+from sqlalchemy_filters import apply_filters
+from apis.lookup import proc_query_params
 
 
 def insert_procedure(request):
     procedure = request.swagger_data['ProcedureItem']
 
     procedure_payload = request.json_body
-    
+
     procedure_obj = FhirProc(procedure, procedure_payload)
     request.db.add(procedure_obj)
     request.db.flush()
@@ -137,119 +141,79 @@ def insert_procedure(request):
 
 
 def fetch_procedure(request):
+
     param_obj = request.swagger_data
-    import pdb;pdb.set_trace()
-    # for handling multiple params
-    if(param_obj['subject'] and param_obj['date']):
 
-        patient_dt_subquery = request.db.query(FhirReference.fhir_idn.label('fhir_idn')).\
-            filter(FhirReference.attribute == 'subject',
-                   FhirReference.FhirReference == param_obj['subject']).subquery()
+    query = FhirProc.base_query_init(request)
 
-        patient_dt = request.db.query(FhirProc.json_payload).\
-            filter(FhirProc.perfome_start_dt == param_obj['date'],
-                   FhirProc.fhir_proc_idn.in_([patient_dt_subquery.c.fhir_idn])).all()
+    filtered_spec = []
 
-        patient_dt_json = to_json_obj(patient_dt)
-        return patient_dt_json
+    filtered_query = 0
 
-    if(param_obj['status']):
-        stat = request.db.query(FhirProc.json_payload).filter(
-            FhirProc.proc_status == param_obj['status']).all()
-        stat_json = to_json_obj(stat)
-        return stat_json
+    filtered_spec = []
 
-    if(param_obj['subject']):
-        sub = request.db.query(FhirProc.json_payload).\
-            filter(FhirProc.fhir_proc_idn == FhirReference.fhir_idn).\
-            filter(FhirReference.attribute == 'subject').filter(FhirReference.reference == param_obj['subject']).\
-            all()
-        sub_json = to_json_obj(sub)
-        return sub_json
+    model_list = []
 
-    if(param_obj['performer']):
-        perf = request.db.query(FhirProc.json_payload).\
-            filter(FhirProc.fhir_proc_idn == FhirReference.fhir_idn).\
-            filter(FhirReference.attribute == 'performer').filter(FhirReference.reference == param_obj['performer']).\
-            filter(FhirReference.reference_idn == ProcPerformer.proc_actor).\
-            all()
-        perf_json = to_json_obj(perf)
-        return perf_json
+    ref_value_list = []
 
-    if(param_obj['patient']):
-        patient = request.db.query(FhirProc.json_payload).\
-            filter(FhirProc.fhir_proc_idn == FhirReference.fhir_idn).\
-            filter(FhirReference.attribute == 'patient').filter(FhirReference.reference == param_obj['patient']).\
-            all()
-        patient_json = to_json_obj(patient)
-        return patient_json
+    code_value_list = []
 
-    if(param_obj['part-of']):
-        partOf = request.db.query(FhirProc.json_payload).\
-            filter(FhirProc.fhir_proc_idn == FhirReference.fhir_idn).\
-            filter(FhirReference.attribute == 'partOf').filter(FhirReference.reference == param_obj['part-of']).\
-            all()
-        partOf_json = to_json_obj(partOf)
-        return partOf_json
+    filtered_query = 0
 
-    if(param_obj['location']):
-        loc = request.db.query(FhirProc.json_payload).\
-            filter(FhirProc.fhir_proc_idn == FhirReference.fhir_idn).\
-            filter(FhirReference.attribute == 'location').filter(FhirReference.reference == param_obj['location']).\
-            all()
-        loc_json = to_json_obj(loc)
-        return loc_json
+    # attribute_value contain a dictionary of param names with associated table names
+    attribute_value = {'FhirReference': [], 'FhirCodeableConcept': []}
 
-    if(param_obj['encounter']):
-        enc = request.db.query(FhirProc.json_payload).\
-            filter(FhirProc.fhir_proc_idn == FhirReference.fhir_idn).\
-            filter(FhirReference.attribute == 'encounter').filter(FhirReference.reference == param_obj['encounter']).\
-            all()
-        enc_json = to_json_obj(enc)
-        return enc_json
+    # generate_filters : Generates the filter using sqlalchemy filter lib
+    def generate_filters():
+        import pdb; pdb.set_trace()
+        obj_model = {'model': '', 'field': '', 'op': '', 'value': ''}
+        for key, val in param_obj.items():
+            if param_obj[key] != None:
+                obj_model['model'] = proc_query_params[key]['table']
+                obj_model['field'] = proc_query_params[key]['col']
+                obj_model['op'] = '=='
+                obj_model['value'] = param_obj[key]
 
-    if(param_obj['identifier']):
-        identifier = request.db.query(FhirProc.json_payload).\
-            filter(FhirProc.fhir_proc_idn == FhirIdentifier.fhir_idn).\
-            filter(FhirIdentifier.value == param_obj['identifier']).\
-            all()
-        identifier_json = to_json_obj(identifier)
-        return identifier_json
+                model_list.append(obj_model['model'])
+                if obj_model['model'] in ('FhirReference', 'FhirCodeableConcept'):
+                    if key == 'based-on':
+                        attribute_value[obj_model['model']].append('basedOn')
+                    elif key == 'part-of':
+                        attribute_value[obj_model['model']].append('partOf')
+                    else:
+                        attribute_value[obj_model['model']].append(key)
+                    filtered_spec.append(obj_model)
+                else:
+                    filtered_spec.append(obj_model)
 
-    if(param_obj['definition']):
-        definition = request.db.query(FhirProc.json_payload).\
-            filter(FhirProc.fhir_proc_idn == FhirReference.fhir_idn).\
-            filter(FhirReference.attribute == 'definition').filter(FhirReference.reference == param_obj['definition']).\
-            all()
-        definition_json = to_json_obj(definition)
-        return definition_json
+                if obj_model['model'] == 'FhirReference':
+                    ref_value_list.append(param_obj[key])
+                elif obj_model['model'] == 'FhirCodeableConcept':
+                    code_value_list.append(param_obj[key])
 
-    if(param_obj['context']):
-        context = request.db.query(FhirProc.json_payload).\
-            filter(FhirProc.fhir_proc_idn == FhirReference.fhir_idn).\
-            filter(FhirReference.attribute == 'context').filter(FhirReference.reference == param_obj['context']).\
-            all()
-        context_json = to_json_obj(context)
-        return context_json
+                obj_model = {'model': '', 'field': '', 'op': '', 'value': ''}
 
-    if(param_obj['code']):
-        code = request.db.query(FhirProc.json_payload).\
-            filter(FhirProc.fhir_proc_idn == FhirCodeableConcept.fhir_idn).\
-            filter(FhirCodeableConcept.attribute == 'code').filter(FhirCodeableConcept.code == param_obj['code']).\
-            all()
-        code_json = to_json_obj(code)
-        return code_json
+    generate_filters()
 
-    if(param_obj['based-on']):
-        basedOn = request.db.query(FhirProc.json_payload).\
-            filter(FhirProc.fhir_proc_idn == FhirCodeableConcept.fhir_idn).\
-            filter(FhirReference.attribute == 'basedOn').filter(FhirReference.reference == param_obj['based-on']).\
-            all()
-        basedOn_json = to_json_obj(basedOn)
-        return basedOn_json
+    # generate_result : Generates result for GET query
+    def generate_result(filtered_spec):
+        if 'FhirCodeableConcept' in model_list:
+            full_query = (query.outerjoin(FhirCodeableConcept, and_(FhirCodeableConcept.fhir_idn == FhirProc.fhir_proc_idn,
+                                                                    FhirCodeableConcept.source == 'procedure', FhirCodeableConcept.attribute.in_(attribute_value['FhirCodeableConcept'])))
+                          .filter(FhirCodeableConcept.code.in_(code_value_list)))
 
-    if(param_obj['date']):
-        dt = request.db.query(FhirProc.json_payload).filter(
-            FhirProc.perfome_start_dt == param_obj['date']).all()
-        dt_json = to_json_obj(dt)
-        return dt_json
+        if 'FhirReference' in model_list:
+            full_query = query.outerjoin(FhirReference, and_(FhirReference.fhir_idn == FhirProc.fhir_proc_idn,
+                                                         FhirReference.source == 'procedure', FhirReference.attribute.in_(attribute_value['FhirReference']))).filter(FhirReference.reference.in_(ref_value_list))
+
+        if 'FhirCodeableConcept' and 'FhirReference' not in model_list:
+            full_query = (query.outerjoin(FhirCodeableConcept, and_(FhirCodeableConcept.fhir_idn == FhirProc.fhir_proc_idn,
+                                                                    FhirCodeableConcept.source == 'procedure'))
+                          .outerjoin(FhirReference, and_(FhirReference.fhir_idn == FhirProc.fhir_proc_idn, FhirReference.source == 'procedure')))
+
+        filtered_query = apply_filters(full_query, filtered_spec)
+        result = filtered_query.all()
+        return result
+
+    result = generate_result(filtered_spec)
+    return result

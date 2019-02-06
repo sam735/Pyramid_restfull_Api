@@ -3,3 +3,4 @@ SQLAlchemy
 pymssql
 waitress
 bravado-core
+sqlalchemy_filters

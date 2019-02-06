@@ -1,0 +1,514 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is an API for Immunization",
+    "version": "1.0.0",
+    "title": "Immunization API",
+    "contact": {
+      "email": "you@your-company.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "localhost:6547",
+  "basePath": "/api/v1.0/",
+  "tags": [
+    {
+      "name": "admins",
+      "description": "Secured Admin-only calls"
+    },
+    {
+      "name": "developers",
+      "description": "Operations available to regular developers"
+    }
+  ],
+  "paths": {
+    "/immunization": {
+      "get": {
+        "tags": [
+          "admins"
+        ],
+        "summary": "searches immunization",
+        "operationId": "searchImmunization",
+        "description": "By passing in the appropriate options, you can search for\navailable immunization in the system\n",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "immunizationIdn",
+            "description": "pass an optional immunizationIdn for looking up inventory",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "skip",
+            "description": "number of records to skip for pagination",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "maximum number of records to return",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ImmunizationItem"
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "admins"
+        ],
+        "summary": "adds an Immunization item",
+        "operationId": "addImmunization",
+        "description": "Adds an item to the system",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ImmunizationItem",
+            "description": "Immunization item to add",
+            "schema": {
+              "$ref": "#/definitions/ImmunizationItem"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "admins"
+        ],
+        "summary": "Update an existing Immunization Item record",
+        "operationId": "updateImmunizationItem",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Immunization object that needs to be updated to the database",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ImmunizationItem"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid Immunization ID supplied"
+          },
+          "404": {
+            "description": "Immunization not found"
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "admins"
+        ],
+        "summary": "Deletes a Immunization record",
+        "description": "This API deletes a Immunization record based on the ImmunizationIdn passed",
+        "operationId": "deleteImmunization",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ImmunizationIdn",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Record deleted successfully"
+          },
+          "400": {
+            "description": "Invalid Immunization ID supplied"
+          },
+          "404": {
+            "description": "Immunization ID not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ImmunizationItem": {
+      "type": "object",
+      "required": [
+        "status",
+        "notGiven",
+        "vaccineCode",
+        "patient",
+        "primarySource"
+      ],
+      "properties": {
+        "identifier": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Identifier"
+          }
+        },
+        "status": {
+          "type": "string"
+        },
+        "notGiven": {
+          "type": "boolean"
+        },
+        "vaccineCode": {
+          "type": "object",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "patient": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence"
+        },
+        "encounter": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence"
+        },
+        "date": {
+          "type": "string"
+        },
+        "primarySource": {
+          "type": "boolean"
+        },
+        "reportOrigin": {
+          "type": "object",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "location": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence"
+        },
+        "manufacturer": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence"
+        },
+        "lotNumber": {
+          "type": "string"
+        },
+        "expirationDate": {
+          "type": "string"
+        },
+        "site": {
+          "type": "object",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "route": {
+          "type": "object",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "doseQuantity": {
+          "type": "object",
+          "$ref": "#/definitions/Quantity"
+        },
+        "practitioner": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "actor"
+            ],
+            "properties": {
+              "role": {
+                "type": "object",
+                "$ref": "#/definitions/CodeableConcept"
+              },
+              "actor": {
+                "type": "object",
+                "$ref": "#/definitions/Refrence"
+              }
+            }
+          }
+        },
+        "note": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Annotation"
+          }
+        },
+        "explanation": {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/CodeableConcept"
+              }
+            },
+            "reasonNotGiven": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/CodeableConcept"
+              }
+            }
+          }
+        },
+        "reaction": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "type": "string"
+              },
+              "detail": {
+                "type": "object",
+                "$ref": "#/definitions/Refrence"
+              },
+              "reported": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "vaccinationProtocol": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "targetDisease",
+              "doseStatus"
+            ],
+            "properties": {
+              "doseSequence": {
+                "type": "number"
+              },
+              "description": {
+                "type": "string"
+              },
+              "authority": {
+                "type": "object",
+                "$ref": "#/definitions/Refrence"
+              },
+              "series": {
+                "type": "string"
+              },
+              "seriesDoses": {
+                "type": "number"
+              },
+              "targetDisease": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "$ref": "#/definitions/CodeableConcept"
+                }
+              },
+              "doseStatus": {
+                "type": "object",
+                "$ref": "#/definitions/CodeableConcept"
+              },
+              "doseStatusReason": {
+                "type": "object",
+                "$ref": "#/definitions/CodeableConcept"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Identifier": {
+      "type": "object",
+      "properties": {
+        "use": {
+          "type": "string"
+        },
+        "type": {
+          "type": "object",
+          "properties": {
+            "coding": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "system": {
+                    "type": "string"
+                  },
+                  "Version": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  },
+                  "display": {
+                    "type": "string"
+                  },
+                  "userSelected": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "text": {
+              "type": "string"
+            }
+          }
+        },
+        "system": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "period": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "string"
+            },
+            "end": {
+              "type": "string"
+            }
+          }
+        },
+        "assigner": {
+          "type": "object",
+          "properties": {
+            "reference": {
+              "type": "string"
+            },
+            "display": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "Refrence": {
+      "type": "object",
+      "properties": {
+        "reference": {
+          "type": "string"
+        },
+        "display": {
+          "type": "string"
+        }
+      }
+    },
+    "CodeableConcept": {
+      "type": "object",
+      "properties": {
+        "coding": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "system": {
+                "type": "string"
+              },
+              "Version": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "display": {
+                "type": "string"
+              },
+              "userSelected": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "Annotation": {
+      "type": "object",
+      "properties": {
+        "authorReference": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence"
+        },
+        "authorString": {
+          "type": "string"
+        },
+        "time": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "Quantity": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "comparator": {
+          "type": "string"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "system": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "schemes": [
+    "http",
+    "https"
+  ]
+}

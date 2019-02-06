@@ -3,7 +3,7 @@ from sqlalchemy import (Table, Column, BigInteger, SmallInteger,
                         CHAR, String, DateTime, ForeignKey, Integer, Numeric, Boolean)
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.mssql import BIT
-
+from sqlalchemy import and_
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -13,7 +13,6 @@ from utility.util import convertStringToDateTime
 
 class CodeYn(Base):
     __tablename__ = 'code_yn'
-
     yn_cd = Column(CHAR(1, u'SQL_Latin1_General_CP1_CI_AS'), primary_key=True)
     description = Column(
         String(100, u'SQL_Latin1_General_CP1_CI_AS'), nullable=False)
@@ -62,6 +61,16 @@ class FhirProc(Base):
             procedure.performedPeriod.end) if procedure.performedPeriod else None
         self.json_payload = str(jsonPayload)
         self.user_idn = 2
+
+    def base_query_init(request):
+        query = (request.db.query(FhirProc.json_payload.distinct())
+                 .outerjoin(ProcPerformer, and_(ProcPerformer.fhir_proc_idn == FhirProc.fhir_proc_idn))
+                 .outerjoin(ProcFocaldevice, and_(ProcFocaldevice.fhir_proc_idn == FhirProc.fhir_proc_idn))
+                 .outerjoin(FhirIdentifier, and_(FhirIdentifier.fhir_idn == FhirProc.fhir_proc_idn,
+                                                 FhirIdentifier.source == 'procedure'))
+                 .outerjoin(FhirNote, and_(FhirNote.fhir_idn == FhirProc.fhir_proc_idn,
+                                             FhirNote.source == 'procedure')))
+        return query
 
 
 class FhirCodeableConcept(Base):
@@ -170,7 +179,6 @@ class ProcFocaldevice(Base):
     proc_focaldevice_idn = Column(Integer, primary_key=True)
     fhir_proc_idn = Column(ForeignKey('fhir_proc.fhir_proc_idn'))
     proc_action = Column(Numeric(18, 0))
-    proc_manipulated = Column(Numeric(18, 0), nullable=False)
     crt_dt = Column(DateTime, nullable=False,
                     server_default=("(getutcdate())"))
     upd_dt = Column(DateTime, nullable=False,

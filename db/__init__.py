@@ -14,5 +14,4 @@ def db(request):
             session.commit()
         session.close()
     request.add_finished_callback(cleanup)
-
     return session

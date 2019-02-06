@@ -7,7 +7,8 @@ requires = [
     'SQLAlchemy',
     'pymssql',
     'waitress',
-    'bravado-core'
+    'bravado-core',
+    'sqlalchemy_filters'
 ]
 
 setup(

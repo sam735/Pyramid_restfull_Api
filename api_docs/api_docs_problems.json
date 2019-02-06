@@ -1,0 +1,661 @@
+{
+   "swagger": "2.0",
+   "info": {
+      "description": "This is Problem API",
+      "version": "1.0.0",
+      "title": "Problem API",
+      "license": {
+         "name": "Apache 2.0",
+         "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+      }
+   },
+   "host": "localhost:6547",
+   "basePath": "/api/v1.0/",
+   "tags": [
+      {
+         "name": "Problem",
+         "description": "Perform all valid operations on problems"
+      }
+   ],
+   "schemes": [
+      "http"
+   ],
+   "paths": {
+      "/problems": {
+         "get": {
+            "tags": [
+               "Problem"
+            ],
+            "summary": "searches problems",
+            "operationId": "searchProblem",
+            "description": "By passing in the appropriate options, you can search for\navailable problems in the system\n",
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "query",
+                  "name": "identifier",
+                  "description": "External Ids for this condition",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": "abatement-age",
+                  "description": "Abatement as age or age range",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": "abatement-boolean",
+                  "description": "Abatement boolean (boolean is true or non-boolean values are present)",
+                  "type": "boolean",
+                   "required": false
+               },
+               {
+                  "in": "query",
+                  "name": "abatement-date",
+                  "description": "Date-related abatements (dateTime and period)",
+                  "required": false,
+                  "type": "string"
+               },
+                {
+                  "in": "query",
+                  "name": " abatement-string",
+                  "description": "Abatement as a string",
+                  "required": false,
+                  "type": "string"
+               },
+                {
+                  "in": "query",
+                  "name": "asserted-date",
+                  "description": "Date record was believed accurate",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": "asserter",
+                  "description": "Person who asserts this condition",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": " body-site",
+                  "description": "Anatomical location, if relevant",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": "category",
+                  "description": "The category of the condition",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": "clinical-status",
+                  "description": "The clinical status of the condition",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": "code",
+                  "description": "Code for the condition",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": "context",
+                  "description": "Encounter or episode when condition first asserted",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": "encounter",
+                  "description": "Encounter when condition first asserted",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": "evidence",
+                  "description": "Manifestation/symptom",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": " evidence-detail",
+                  "description": "Supporting information found elsewhere",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": "patient",
+                  "description": "Who has the condition?",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": "onset-age",
+                  "description": "Onsets as age or age range",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": "onset-date",
+                  "description": "Date related onsets (dateTime and Period)",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": " onset-info",
+                  "description": "Onsets as a string",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": "severity",
+                  "description": "The severity of the condition",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": " stage",
+                  "description": "Simple summary (disease specific)",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": "subject",
+                  "description": "Who has the condition?",
+                  "required": false,
+                  "type": "string"
+               },
+               {
+                  "in": "query",
+                  "name": " verification-status",
+                  "description": "provisional | differential | confirmed | refuted | entered-in-error | unknown",
+                  "required": false,
+                  "type": "string"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "search results matching criteria",
+                  "schema": {
+                     "type": "array",
+                     "items": {
+                        "$ref": "#/definitions/Problem"
+                     }
+                  }
+               },
+               "400": {
+                  "description": "bad input parameter"
+               }
+            }
+         },
+         "post": {
+            "tags": [
+               "Problem"
+            ],
+            "summary": "adds an problem",
+            "operationId": "addProblem",
+            "description": "Adds an problem to the system",
+            "consumes": [
+               "application/json"
+            ],
+            "produces": [
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "body",
+                  "name": "problem",
+                  "description": "Problem to be add",
+                  "schema": {
+                     "$ref": "#/definitions/Problem"
+                  }
+               }
+            ],
+            "responses": {
+               "201": {
+                  "description": "problem created"
+               },
+               "400": {
+                  "description": "invalid input, object invalid"
+               },
+               "409": {
+                  "description": "an existing problem already exists"
+               }
+            }
+         },
+         "put": {
+            "tags": [
+               "Problem"
+            ],
+            "summary": "Update an existing problem record",
+            "description": "This record updates an existing problem record",
+            "operationId": "updateProblem",
+            "consumes": [
+               "application/json",
+               "application/xml"
+            ],
+            "produces": [
+               "application/xml",
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "in": "body",
+                  "name": "body",
+                  "description": "Problem object that needs to be updated to the database",
+                  "required": true,
+                  "schema": {
+                     "$ref": "#/definitions/Problem"
+                  }
+               }
+            ],
+            "responses": {
+               "400": {
+                  "description": "Invalid problem ID supplied"
+               },
+               "404": {
+                  "description": "Problem not found"
+               },
+               "405": {
+                  "description": "Validation exception"
+               }
+            }
+         },
+         "delete": {
+            "tags": [
+               "Problem"
+            ],
+            "summary": "Deletes a problem record",
+            "description": "This API deletes a problem record based on the problemId passed",
+            "operationId": "deleteProblem",
+            "produces": [
+               "application/xml",
+               "application/json"
+            ],
+            "parameters": [
+               {
+                  "name": "problemId",
+                  "in": "query",
+                  "required": true,
+                  "type": "integer",
+                  "format": "int64"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "Record deleted successfully"
+               },
+               "400": {
+                  "description": "Invalid problem ID supplied"
+               },
+               "404": {
+                  "description": "Problem ID not found"
+               }
+            }
+         }
+      }
+   },
+   "definitions": {
+      "Problem": {
+         "type": "object",
+         "required": [
+            "subject"
+         ],
+         "properties": {
+            "identifier": {
+               "type": "array",
+               "items": {
+                  "type": "object",
+                  "$ref": "#/definitions/Identifier"
+               }
+            },
+            "clinicalStatus": {
+               "type": "string"
+            },
+            "verificationStatus": {
+               "type": "string"
+            },
+            "category": {
+               "type": "array",
+               "items": {
+                  "type": "object",
+                  "$ref": "#/definitions/CodeableConcept"
+               }
+            },
+            "severity": {
+               "type": "object",
+               "$ref": "#/definitions/CodeableConcept"
+            },
+            "code": {
+               "type": "object",
+               "$ref": "#/definitions/CodeableConcept"
+            },
+            "bodySite": {
+               "type": "array",
+               "items": {
+                  "type": "object",
+                  "$ref": "#/definitions/CodeableConcept"
+               }
+            },
+            "subject": {
+               "type": "object",
+               "$ref": "#/definitions/Reference"
+            },
+            "context": {
+               "type": "object",
+               "$ref": "#/definitions/Reference"
+            },
+            "onsetDateTime": {
+               "type": "string"
+            },
+            "onsetAge": {
+               "type": "string"
+            },
+            "onsetPeriod": {
+               "type": "object",
+               "$ref": "#/definitions/Period"
+            },
+            "onsetRange": {
+               "type": "object",
+               "$ref": "#/definitions/Range"
+            },
+            "onsetString": {
+               "type": "string"
+            },
+            "abatementDateTime": {
+               "type": "string"
+            },
+            "abatementAge": {
+               "type": "string"
+            },
+            "abatementBoolean": {
+               "type": "boolean"
+            },
+            "abatementPeriod": {
+               "type": "object",
+               "$ref": "#/definitions/Period"
+            },
+            "abatementRange": {
+               "type": "object",
+               "$ref": "#/definitions/Range"
+            },
+            "abatementString": {
+               "type": "string"
+            },
+            "assertedDate": {
+               "type": "string"
+            },
+            "asserter": {
+               "type": "object",
+               "$ref": "#/definitions/Reference"
+            },
+            "stage": {
+               "type": "object",
+               "properties": {
+                  "summary": {
+                     "type": "object",
+                     "$ref": "#/definitions/CodeableConcept"
+                  },
+                  "assessment": {
+                     "type": "array",
+                     "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/Reference"
+                     }
+                  }
+               }
+            },
+            "evidence": {
+               "type": "array",
+               "items": {
+                  "type": "object",
+                  "properties": {
+                     "code": {
+                        "type": "array",
+                        "items": {
+                           "type": "object",
+                           "$ref": "#/definitions/CodeableConcept"
+                        }
+                     },
+                     "detail": {
+                        "type": "array",
+                        "items": {
+                           "type": "object",
+                           "$ref": "#/definitions/Reference"
+                        }
+                     }
+                  }
+               }
+            },
+            "note": {
+               "type": "array",
+               "items": {
+                  "type": "object",
+                  "$ref": "#/definitions/Annotation"
+               }
+            }
+         }
+      },
+      "Coding": {
+         "type": "object",
+         "properties": {
+            "system": {
+               "type": "string",
+               "format": "uri",
+               "description": "This is a URI that represents the identity of the terminology\nsystem",
+               "x-example": "http://snomed.info/sct"
+            },
+            "version": {
+               "type": "string",
+               "description": "Version of the system - if relevant"
+            },
+            "code": {
+               "type": "string",
+               "format": "code",
+               "description": "Symbol in syntax defined by the system",
+               "x-example": 227037002
+            },
+            "display": {
+               "type": "string",
+               "description": "Representation defined by the system",
+               "x-example": "Fish - dietary (substance)"
+            },
+            "userSelected": {
+               "type": "boolean",
+               "description": "If this coding was chosen directly by the user"
+            }
+         }
+      },
+      "CodeableConcept": {
+         "type": "object",
+         "properties": {
+            "coding": {
+               "type": "array",
+               "items": {
+                  "$ref": "#/definitions/Coding",
+                  "description": "Code defined by a terminology system"
+               }
+            },
+            "text": {
+               "type": "string",
+               "description": "Plain text representation of the concept",
+               "x-example": "Allergic to fresh fish. Tolerates canned fish"
+            }
+         }
+      },
+      "Reference": {
+         "type": "object",
+         "format": "object",
+         "properties": {
+            "reference": {
+               "type": "string",
+               "description": "Literal reference, Relative, internal or absolute URL"
+            },
+            "identifier": {
+               "type": "object",
+               "$ref": "#/definitions/Identifier",
+               "description": "Logical reference, when literal reference is not known"
+            },
+            "display": {
+               "type": "string",
+               "description": "Text alternative for the resource"
+            }
+         }
+      },
+      "Identifier": {
+         "type": "object",
+         "properties": {
+            "use": {
+               "type": "string",
+               "enum": [
+                  "usual",
+                  "official",
+                  "temp",
+                  "secondary (If known)"
+               ],
+               "x-example": "usual"
+            },
+            "type": {
+               "type": "object",
+               "$ref": "#/definitions/CodeableConcept",
+               "description": "Description of identifier"
+            },
+            "system": {
+               "type": "string",
+               "format": "uri",
+               "description": "The namespace for the identifier value"
+            },
+            "value": {
+               "type": "string",
+               "description": "The value that is unique"
+            },
+            "period": {
+               "type": "object",
+               "$ref": "#/definitions/Period",
+               "description": "Time period when id is/was valid for use"
+            },
+            "assigner": {
+               "type": "object",
+               "$ref": "#/definitions/Reference",
+               "description": "Organization that issued id (may be just text)"
+            }
+         }
+      },
+      "Period": {
+         "type": "object",
+         "properties": {
+            "start": {
+               "type": "string",
+               "format": "date-time",
+               "description": "Starting time with inclusive boundary"
+            },
+            "end": {
+               "type": "string",
+               "format": "date-time",
+               "description": "End time with inclusive boundary, if not ongoing"
+            }
+         }
+      },
+      "Quantity": {
+         "type": "object",
+         "properties": {
+            "value": {
+               "type": "number",
+               "multipleOf": 0.001,
+               "description": "Numerical value (with implicit precision)"
+            },
+            "comparator": {
+               "type": "string",
+               "enum": [
+                  "<",
+                  "<=",
+                  ">=",
+                  ">"
+               ],
+               "x-example": "<"
+            },
+            "unit": {
+               "type": "string",
+               "description": "Unit representation",
+               "x-example": "lbs"
+            },
+            "system": {
+               "type": "string",
+               "format": "uri",
+               "description": "System that defines coded unit form",
+               "x-example": "http://unitsofmeasure.org"
+            },
+            "code": {
+               "type": "string",
+               "description": "Coded form of the unit",
+               "x-example": [
+                  "lbs_av"
+               ]
+            }
+         }
+      },
+      "Range": {
+         "type": "object",
+         "properties": {
+            "low": {
+               "type": "object",
+               "$ref": "#/definitions/Quantity",
+               "description": "Low limit",
+               "x-example": 0.1
+            },
+            "high": {
+               "type": "object",
+               "$ref": "#/definitions/Quantity",
+               "description": "High limit",
+               "x-example": 5
+            }
+         }
+      },
+      "Annotation": {
+         "type": "object",
+         "required": [
+            "text"
+         ],
+         "properties": {
+            "authorReference": {
+               "type": "object",
+               "$ref": "#/definitions/Reference"
+            },
+            "authorString": {
+               "type": "string"
+            },
+            "time": {
+               "type": "string",
+               "description": "When the annotation was made",
+               "x-example": "04:20:00-06:00"
+            },
+            "text": {
+               "type": "string",
+               "description": "The annotation  - text content"
+            }
+         }
+      }
+   }
+}
