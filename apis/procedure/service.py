@@ -3,7 +3,7 @@ from db.model.procedure import (FhirProc, CodeYn, FhirCodeableConcept, FhirRefer
                                 ProcFocaldevice, FhirIdentifier, FhirNote)
 from utility.util import (DictToObject, to_json_obj)
 
-from db.common import(insert_to_identifier, insert_to_FhirNote)
+from db.common import(insert_to_identifier, insert_to_FhirNote, insert_to_CodeableConcept)
 
 import json
 from sqlalchemy import and_
@@ -27,16 +27,8 @@ def insert_procedure(request):
                         val, procedure_obj.fhir_proc_idn, 'procedure', key)
                     request.db.add(ref_obj)
                 if type(val).__name__ == 'CodeableConcept':
-                    if val.coding != None:
-                        for code in val.coding:
-                            Codeeable_obj = FhirCodeableConcept(DictToObject(
-                                code), val.text, procedure_obj.fhir_proc_idn, 'procedure', key)
-                            request.db.add(Codeeable_obj)
-                    else:
-                        Codeeable_obj = FhirCodeableConcept(DictToObject(
-                            {}), val.text, procedure_obj.fhir_proc_idn, 'procedure', key)
-                        request.db.add(Codeeable_obj)
-
+                    insert_to_CodeableConcept(val, procedure_obj.fhir_proc_idn,'Procedure',
+                                                key, request.db)
                 if type(val).__name__ == 'Annotation':
                     insert_to_FhirNote(
                         val, procedure_obj.fhir_proc_idn, 'procedure', key, request.db)
@@ -51,16 +43,8 @@ def insert_procedure(request):
             request.db.add(ref_obj)
 
         if type(procedure[key]).__name__ == 'CodeableConcept':
-            if procedure[key].coding != None:
-                for code in procedure[key].coding:
-                    Codeeable_obj = FhirCodeableConcept(DictToObject(
-                        code), procedure[key].text, procedure_obj.fhir_proc_idn, 'procedure', key)
-                    request.db.add(Codeeable_obj)
-            else:
-                Codeeable_obj = FhirCodeableConcept(DictToObject(
-                    {}), procedure[key].text, procedure_obj.fhir_proc_idn, 'procedure', key)
-                request.db.add(Codeeable_obj)
-
+            insert_to_CodeableConcept(procedure[key],procedure_obj.fhir_proc_idn,'Procedure',
+                                        key, request.db)
     role_obj = None
     actor_obj = None
     onBehalfOf_obj = None
