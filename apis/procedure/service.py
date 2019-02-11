@@ -199,12 +199,14 @@ def fetch_procedure(request):
     def generate_result(filtered_spec):
         if 'FhirCodeableConcept' in model_list:
             full_query = (query.outerjoin(FhirCodeableConcept, and_(FhirCodeableConcept.fhir_idn == FhirProc.fhir_proc_idn,
-                                                                    FhirCodeableConcept.source == 'procedure', FhirCodeableConcept.attribute.in_(attribute_value['FhirCodeableConcept'])))
+                                                                    FhirCodeableConcept.source == 'procedure', 
+                                                                    FhirCodeableConcept.attribute.in_(attribute_value['FhirCodeableConcept'])))
                           .filter(FhirCodeableConcept.code.in_(code_value_list)))
 
         if 'FhirReference' in model_list:
             full_query = query.outerjoin(FhirReference, and_(FhirReference.fhir_idn == FhirProc.fhir_proc_idn,
-                                                         FhirReference.source == 'procedure', FhirReference.attribute.in_(attribute_value['FhirReference']))).filter(FhirReference.reference.in_(ref_value_list))
+                                                         FhirReference.source == 'procedure', 
+                                                         FhirReference.attribute.in_(attribute_value['FhirReference']))).filter(FhirReference.reference.in_(ref_value_list))
 
         if 'FhirCodeableConcept' and 'FhirReference' not in model_list:
             full_query = (query.outerjoin(FhirCodeableConcept, and_(FhirCodeableConcept.fhir_idn == FhirProc.fhir_proc_idn,

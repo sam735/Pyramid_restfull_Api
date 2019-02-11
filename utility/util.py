@@ -28,7 +28,7 @@ def convertStringToDateTime(str):
 def to_json_obj(obj):
     l = []
     for i in range(len(obj)):
-        obj_tup = obj[i].json_payload
-        obj_str = ast.literal_eval(obj_tup)
+        obj_tup = obj[i]
+        obj_str = ast.literal_eval(obj_tup[0])
         l.append(obj_str)
     return l

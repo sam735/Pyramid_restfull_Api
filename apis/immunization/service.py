@@ -4,7 +4,11 @@ from db.model.procedure import(
 	FhirCodeableConcept, FhirReference, FhirIdentifier, FhirNote)
 from utility.util import (DictToObject, to_json_obj)
 
-from db.common import(insert_to_identifier, insert_to_FhirNote)
+from db.common import(insert_to_identifier, insert_to_FhirNote, insert_to_CodeableConcept
+						)
+from db.model_query import immunization_base_query_init,generate_query
+from apis.lookup import immunization_query_params
+from sqlalchemy_filters import apply_filters
 
 
 def insert_immunization(request):
@@ -23,15 +27,8 @@ def insert_immunization(request):
 						val, immunization_obj.fhir_immunization_idn, 'Immunization', key)
 					request.db.add(ref_obj)
 				if type(val).__name__ == 'CodeableConcept':
-					if val.coding != None:
-						for code in val.coding:
-							Codeeable_obj = FhirCodeableConcept(DictToObject(
-								code), val.text, immunization_obj.fhir_immunization_idn, 'Immunization', key)
-							request.db.add(Codeeable_obj)
-					else:
-						Codeeable_obj = FhirCodeableConcept(DictToObject(
-							{}), val.text, immunization_obj.fhir_immunization_idn, 'Immunization', key)
-						request.db.add(Codeeable_obj)
+					insert_to_CodeableConcept(val,immunization_obj.fhir_immunization_idn,
+												'Immunization',key,request.db)
 
 				if type(val).__name__ == 'Annotation':
 					insert_to_FhirNote(
@@ -47,15 +44,8 @@ def insert_immunization(request):
 			request.db.add(ref_obj)
 
 		if type(immunization[key]).__name__ == 'CodeableConcept':
-			if immunization[key].coding != None:
-				for code in immunization[key].coding:
-					Codeeable_obj = FhirCodeableConcept(DictToObject(
-						code), immunization[key].text, immunization_obj.fhir_immunization_idn, 'Immunization', key)
-					request.db.add(Codeeable_obj)
-			else:
-				Codeeable_obj = FhirCodeableConcept(DictToObject(
-					{}), immunization[key].text, immunization_obj.fhir_immunization_idn, 'Immunization', key)
-				request.db.add(Codeeable_obj)
+			insert_to_CodeableConcept(immunization[key], immunization_obj.fhir_immunization_idn,
+										'Immunization',key, request.db)
 
 		if type(immunization[key]).__name__ == 'Quantity':
 			dose_quantity = FhirQuantity(
@@ -69,15 +59,8 @@ def insert_immunization(request):
 			request.db.add(actor_obj)
 
 			if practitioner.get('role') != None:
-				if practitioner.get('role').coding != None:
-					for code in practitioner.get('role').coding:
-						role_obj = FhirCodeableConcept(DictToObject(code), practitioner.get(
-							'role').text, immunization_obj.fhir_immunization_idn, 'Immunization', 'practitioner')
-						request.db.add(role_obj)
-				else:
-					role_obj = FhirCodeableConcept(DictToObject({}), practitioner.get(
-						'role').text, immunization_obj.fhir_immunization_idn, 'Immunization', 'practitioner')
-					request.db.add(role_obj)
+				insert_to_CodeableConcept(practitioner.get('role'),immunization_obj.fhir_immunization_idn,
+											'Immunization','practitioner', request.db)
 
 	if immunization.explanation != None:
 		explanation = immunization.explanation
@@ -85,15 +68,8 @@ def insert_immunization(request):
 			if type(val).__name__ == 'list':
 				for value in val:
 					if type(value).__name__ == 'CodeableConcept':
-						if value.coding != None:
-							for code in value.coding:
-								Codeeable_obj = FhirCodeableConcept(DictToObject(
-									code), value.text, immunization_obj.fhir_immunization_idn, 'Immunization', 'explanation_' + key)
-								request.db.add(Codeeable_obj)
-						else:
-							Codeeable_obj = FhirCodeableConcept(DictToObject(
-								{}), value.text, immunization_obj.fhir_immunization_idn, 'Immunization', 'explanation_'+key)
-							request.db.add(Codeeable_obj)
+						insert_to_CodeableConcept(value,immunization_obj.fhir_immunization_idn,
+													'Immunization','explanation'+key, request.db)
 
 	if immunization.reaction !=None:
 		reaction = immunization.reaction
@@ -117,30 +93,12 @@ def insert_immunization(request):
 				if type(val).__name__ == 'list':
 					for values in val:
 						if type(values).__name__ == 'CodeableConcept':
-							if values.coding != None:
-								for code in values.coding:
-									Codeeable_obj = FhirCodeableConcept(DictToObject(
-										code), values.text, immunization_obj.fhir_immunization_idn,
-										 'Immunization', key)
-									request.db.add(Codeeable_obj)
-							else:
-								Codeeable_obj = FhirCodeableConcept(DictToObject(
-									{}), values.text, immunization_obj.fhir_immunization_idn,
-									 'Immunization', key)
-								request.db.add(Codeeable_obj)
+							insert_to_CodeableConcept(values, immunization_obj.fhir_immunization_idn,
+														'Immunization', key, request.db)
 
 				if type(val).__name__ == 'CodeableConcept':
-					if val.coding != None:
-						for code in val.coding:
-							Codeeable_obj = FhirCodeableConcept(DictToObject(
-								code), val.text, immunization_obj.fhir_immunization_idn,
-								 'Immunization', key)
-							request.db.add(Codeeable_obj)
-					else:
-						Codeeable_obj = FhirCodeableConcept(DictToObject(
-							{}), val.text, immunization_obj.fhir_immunization_idn,
-							 'Immunization', key)
-						request.db.add(Codeeable_obj)
+					insert_to_CodeableConcept(val, immunization_obj.fhir_immunization_idn,
+												'Immunization',key,request.db)
 
 				if type(val).__name__ == 'Refrence':
 					ref_obj = FhirReference(
@@ -148,3 +106,12 @@ def insert_immunization(request):
 					request.db.add(ref_obj)
 
 	request.db.flush()
+
+def search_immunization(request):
+	param_obj = request.swagger_data
+	import pdb; pdb.set_trace()
+	base_query = immunization_base_query_init(request)
+	filtered_spec = generate_query(param_obj,immunization_query_params)
+	filtered_query = apply_filters(base_query, filtered_spec)
+	result = filtered_query.all()
+	return to_json_obj(result)

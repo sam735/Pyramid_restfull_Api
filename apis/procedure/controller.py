@@ -22,7 +22,6 @@ def add_procedure(request):
 
 def search_procedure(request):
     try:
-        import pdb; pdb.set_trace()
         rec = fetch_procedure(request)
     except Exception:
         return Response(

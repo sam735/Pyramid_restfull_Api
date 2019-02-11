@@ -82,3 +82,22 @@ problem_query_params =  {
 	"evidence":					{"table" : "FhirCodeableConcept","fhir_id":"fhir_idn","type":"attribute","col":"reference"},	
 	"severity":					{"table" : "FhirCodeableConcept","fhir_id":"fhir_idn","type":"attribute","col":"reference"}		
 }
+
+immunization_query_params = {
+	"date":                  {"table":"FhirImmunization", "col":"date"},
+	"dose-sequence":         {"table":"ImmunVaccinationProtocol", "col":"does_sequence"},
+	"location":              {"table":"FhirReference", "col":"reference"},
+	"lot-number":            {"table":"FhirImmunization","col":"lotNumber"},
+	"manufacturer":          {"table":"FhirReference", "col":"reference"},
+	"notgiven":              {"table":"FhirImmunization", "col":"not_given"},
+	"patient":               {"table":"FhirReference", "col":"reference"},
+	"practitioner":          {"table":"FhirReference", "col":"reference"},
+	"reaction":              {"table":"FhirReference", "col":"reference"},
+	"reaction-date":         {"table":"ImmunReaction", "col":"date"},
+	"reason":                {"table":"FhirCodeableConcept", "col":"code"},
+	"reason-not-given":      {"table":"FhirCodeableConcept", "col":"code"},
+	"status":                {"table":"FhirImmunization", "col":"status"},
+	"vaccine-code":          {"table":"FhirCodeableConcept", "col":"code"},
+	"identifier":            {"table":"FhirIdentifier","col":"value"},
+	"immunizationIdn":       {"table":"FhirImmunization", "col":"fhir_immunization_idn"}
+}

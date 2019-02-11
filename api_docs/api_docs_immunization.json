@@ -40,7 +40,112 @@
           {
             "in": "query",
             "name": "immunizationIdn",
-            "description": "pass an optional immunizationIdn for looking up inventory",
+            "description": "pass an optional immunizationIdn for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "date",
+            "description": "pass an optional Vaccination administration date for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "dose-sequence",
+            "description": "pass an optional Dose number for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "identifier",
+            "description": "pass an optional Business identifier for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "location",
+            "description": "pass an optional service delivery location or facility in which the vaccine was / was to be administered for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "lot-number",
+            "description": "pass an optional Vaccine Lot Number for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "manufacturer",
+            "description": "pass an optional Vaccine Manufacturer for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "notgiven",
+            "description": "pass an optional flag Flag for whether immunization was given for looking up immunization",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "in": "query",
+            "name": "patient",
+            "description": "pass an optional patient for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "practitioner",
+            "description": "pass an optional practitioner who played a role in the vaccination for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "reaction",
+            "description": "pass an optional details for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "reaction-date",
+            "description": "pass an optional reaction-date for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "reason",
+            "description": "pass an optional reason for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "reason-not-given",
+            "description": "pass an optional reason-not-given for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "description": "pass an optional status for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "vaccine-code",
+            "description": "pass an optional vaccine-code for looking up immunization",
             "required": false,
             "type": "string"
           },
@@ -106,6 +211,9 @@
           },
           "400": {
             "description": "invalid input, object invalid"
+          },
+          "409": {
+            "description": "an existing item already exists"
           }
         }
       },
@@ -508,7 +616,7 @@
     }
   },
   "schemes": [
-    "http",
-    "https"
+    "https",
+    "http"
   ]
 }
