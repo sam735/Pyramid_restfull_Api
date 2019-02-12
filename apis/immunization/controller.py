@@ -16,7 +16,7 @@ def add_immunization(request):
 
 	return Response(
 		status='201',
-		body=json.dumps({'Details': 'Procedure is created'}),
+		body=json.dumps({'Details': 'Immunization is created'}),
 		content_type='application/json; charset=UTF-8')
 
 def fetch_immunization(request):

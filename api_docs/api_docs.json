@@ -1,0 +1,964 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "API for Clinical data set",
+    "version": "1.0.0",
+    "title": "Clinical Data set API",
+    "contact": {
+      "email": "ksanjeev@zeomega.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "localhost:6547",
+  "basePath": "/api/v1.0/",
+  "tags": [
+    {
+      "name": "Zeomega",
+      "description": "Population-based Care Management"
+    }
+  ],
+  "paths": {
+    "/Immunizations": {
+      "get": {
+        "tags": [
+          "Immunization"
+        ],
+        "summary": "searches immunization",
+        "operationId": "searchImmunization",
+        "description": "By passing in the appropriate options, you can search for\navailable immunization in the system\n",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "immunizationIdn",
+            "description": "pass an optional immunizationIdn for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "date",
+            "description": "pass an optional Vaccination administration date for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "dose-sequence",
+            "description": "pass an optional Dose number for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "identifier",
+            "description": "pass an optional Business identifier for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "location",
+            "description": "pass an optional service delivery location or facility in which the vaccine was / was to be administered for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "lot-number",
+            "description": "pass an optional Vaccine Lot Number for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "manufacturer",
+            "description": "pass an optional Vaccine Manufacturer for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "notgiven",
+            "description": "pass an optional flag Flag for whether immunization was given for looking up immunization",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "in": "query",
+            "name": "patient",
+            "description": "pass an optional patient for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "practitioner",
+            "description": "pass an optional practitioner who played a role in the vaccination for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "reaction",
+            "description": "pass an optional details for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "reaction-date",
+            "description": "pass an optional reaction-date for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "reason",
+            "description": "pass an optional reason for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "reason-not-given",
+            "description": "pass an optional reason-not-given for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "description": "pass an optional status for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "vaccine-code",
+            "description": "pass an optional vaccine-code for looking up immunization",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "skip",
+            "description": "number of records to skip for pagination",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "maximum number of records to return",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ImmunizationItem"
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Immunization"
+        ],
+        "summary": "adds an Immunization item",
+        "operationId": "addImmunization",
+        "description": "Adds an item to the system",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ImmunizationItem",
+            "description": "Immunization item to add",
+            "schema": {
+              "$ref": "#/definitions/ImmunizationItem"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "409": {
+            "description": "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/Procedures": {
+      "get": {
+        "tags": [
+          "Procedure"
+        ],
+        "summary": "searches Procedure",
+        "operationId": "searchProcedure",
+        "description": "By passing in the appropriate options, you can search for\navailable Procedure in the system\n",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "skip",
+            "description": "number of records to skip for pagination",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "maximum number of records to return",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "description": "fetch records with given status",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "in": "query",
+            "name": "subject",
+            "description": "fetch records having the given subject",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "in": "query",
+            "name": "performer",
+            "description": "fetch records having the given performer id",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "in": "query",
+            "name": "patient",
+            "description": "fetch records having the given patient id",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "in": "query",
+            "name": "part-of",
+            "description": "fetch records that are a part of referenced events",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "in": "query",
+            "name": "location",
+            "description": "fetch records that are of given location",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "in": "query",
+            "name": "encounter",
+            "description": "fetch records that are a of given encounter",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "in": "query",
+            "name": "definition",
+            "description": "fetch records that based on given definition",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "in": "query",
+            "name": "context",
+            "description": "fetch records  of a given context",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "in": "query",
+            "name": "code",
+            "description": "fetch records that are a of given procedure code",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "in": "query",
+            "name": "based-on",
+            "description": "fetch records that are a of given based-on object",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "in": "query",
+            "name": "date",
+            "description": "fetch records based on a given date/Period the procedure was performed",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          },
+          {
+            "in": "query",
+            "name": "identifier",
+            "description": "fetch records based on a given identifier",
+            "required": false,
+            "type": "string",
+            "maximum": 10,
+            "minimum": 0,
+            "format": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ProcedureItem"
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Procedure"
+        ],
+        "summary": "adds an Procedure item",
+        "operationId": "addProcedure",
+        "description": "Adds an item to the system",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ProcedureItem",
+            "description": "Procedure item to add",
+            "schema": {
+              "$ref": "#/definitions/ProcedureItem"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "409": {
+            "description": "an existing item already exists"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ImmunizationItem": {
+      "type": "object",
+      "required": [
+        "status",
+        "notGiven",
+        "vaccineCode",
+        "patient",
+        "primarySource"
+      ],
+      "properties": {
+        "identifier": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Identifier"
+          }
+        },
+        "status": {
+          "type": "string"
+        },
+        "notGiven": {
+          "type": "boolean"
+        },
+        "vaccineCode": {
+          "type": "object",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "patient": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence"
+        },
+        "encounter": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence"
+        },
+        "date": {
+          "type": "string"
+        },
+        "primarySource": {
+          "type": "boolean"
+        },
+        "reportOrigin": {
+          "type": "object",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "location": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence"
+        },
+        "manufacturer": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence"
+        },
+        "lotNumber": {
+          "type": "string"
+        },
+        "expirationDate": {
+          "type": "string"
+        },
+        "site": {
+          "type": "object",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "route": {
+          "type": "object",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "doseQuantity": {
+          "type": "object",
+          "$ref": "#/definitions/Quantity"
+        },
+        "practitioner": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "actor"
+            ],
+            "properties": {
+              "role": {
+                "type": "object",
+                "$ref": "#/definitions/CodeableConcept"
+              },
+              "actor": {
+                "type": "object",
+                "$ref": "#/definitions/Refrence"
+              }
+            }
+          }
+        },
+        "note": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Annotation"
+          }
+        },
+        "explanation": {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/CodeableConcept"
+              }
+            },
+            "reasonNotGiven": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/CodeableConcept"
+              }
+            }
+          }
+        },
+        "reaction": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "type": "string"
+              },
+              "detail": {
+                "type": "object",
+                "$ref": "#/definitions/Refrence"
+              },
+              "reported": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "vaccinationProtocol": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "targetDisease",
+              "doseStatus"
+            ],
+            "properties": {
+              "doseSequence": {
+                "type": "number"
+              },
+              "description": {
+                "type": "string"
+              },
+              "authority": {
+                "type": "object",
+                "$ref": "#/definitions/Refrence"
+              },
+              "series": {
+                "type": "string"
+              },
+              "seriesDoses": {
+                "type": "number"
+              },
+              "targetDisease": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "$ref": "#/definitions/CodeableConcept"
+                }
+              },
+              "doseStatus": {
+                "type": "object",
+                "$ref": "#/definitions/CodeableConcept"
+              },
+              "doseStatusReason": {
+                "type": "object",
+                "$ref": "#/definitions/CodeableConcept"
+              }
+            }
+          }
+        }
+      }
+    },
+    "ProcedureItem": {
+      "type": "object",
+      "required": [
+        "status",
+        "subject"
+      ],
+      "properties": {
+        "resourceType": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Identifier"
+          }
+        },
+        "definition": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Refrence"
+          }
+        },
+        "basedOn": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Refrence"
+          }
+        },
+        "partOf": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Refrence"
+          }
+        },
+        "status": {
+          "type": "string"
+        },
+        "notDone": {
+          "type": "boolean"
+        },
+        "notDoneReason": {
+          "type": "object",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "category": {
+          "type": "object",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "code": {
+          "type": "object",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "subject": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence"
+        },
+        "context": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence"
+        },
+        "performedDateTime": {
+          "type": "string"
+        },
+        "performedPeriod": {
+          "type": "object",
+          "$ref": "#/definitions/Period"
+        },
+        "performer": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "actor"
+            ],
+            "properties": {
+              "role": {
+                "type": "object",
+                "$ref": "#/definitions/CodeableConcept"
+              },
+              "actor": {
+                "type": "object",
+                "$ref": "#/definitions/Refrence"
+              },
+              "onBehalfOf": {
+                "type": "object",
+                "$ref": "#/definitions/Refrence"
+              }
+            }
+          }
+        },
+        "location": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence"
+        },
+        "reasonCode": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/CodeableConcept"
+          }
+        },
+        "reasonReference": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Refrence"
+          }
+        },
+        "bodySite": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/CodeableConcept"
+          }
+        },
+        "outcome": {
+          "type": "object",
+          "$ref": "#/definitions/CodeableConcept"
+        },
+        "report": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Refrence"
+          }
+        },
+        "complication": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/CodeableConcept"
+          }
+        },
+        "complicationDetail": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Refrence"
+          }
+        },
+        "followUp": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/CodeableConcept"
+          }
+        },
+        "note": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Annotation"
+          }
+        },
+        "focalDevice": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "manipulated"
+            ],
+            "properties": {
+              "action": {
+                "type": "object",
+                "$ref": "#/definitions/CodeableConcept"
+              },
+              "manipulated": {
+                "type": "object",
+                "$ref": "#/definitions/Refrence"
+              }
+            }
+          }
+        },
+        "usedReference": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Refrence"
+          }
+        },
+        "usedCode": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/CodeableConcept"
+          }
+        }
+      }
+    },
+    "Identifier": {
+      "type": "object",
+      "properties": {
+        "use": {
+          "type": "string"
+        },
+        "type": {
+          "type": "object",
+          "properties": {
+            "coding": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "system": {
+                    "type": "string"
+                  },
+                  "Version": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  },
+                  "display": {
+                    "type": "string"
+                  },
+                  "userSelected": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "text": {
+              "type": "string"
+            }
+          }
+        },
+        "system": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "period": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "string"
+            },
+            "end": {
+              "type": "string"
+            }
+          }
+        },
+        "assigner": {
+          "type": "object",
+          "properties": {
+            "reference": {
+              "type": "string"
+            },
+            "display": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "Period": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string"
+        },
+        "end": {
+          "type": "string"
+        }
+      }
+    },
+    "Refrence": {
+      "type": "object",
+      "properties": {
+        "reference": {
+          "type": "string"
+        },
+        "display": {
+          "type": "string"
+        }
+      }
+    },
+    "CodeableConcept": {
+      "type": "object",
+      "properties": {
+        "coding": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "system": {
+                "type": "string"
+              },
+              "Version": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "display": {
+                "type": "string"
+              },
+              "userSelected": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "Annotation": {
+      "type": "object",
+      "properties": {
+        "authorReference": {
+          "type": "object",
+          "$ref": "#/definitions/Refrence"
+        },
+        "authorString": {
+          "type": "string"
+        },
+        "time": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "Quantity": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "comparator": {
+          "type": "string"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "system": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "schemes": [
+    "https",
+    "http"
+  ]
+}

@@ -109,7 +109,6 @@ def insert_immunization(request):
 
 def search_immunization(request):
 	param_obj = request.swagger_data
-	import pdb; pdb.set_trace()
 	base_query = immunization_base_query_init(request)
 	filtered_spec = generate_query(param_obj,immunization_query_params)
 	filtered_query = apply_filters(base_query, filtered_spec)
