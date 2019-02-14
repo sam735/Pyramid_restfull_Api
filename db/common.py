@@ -1,7 +1,7 @@
 from db.model.procedure import(
     FhirCodeableConcept, FhirNote, FhirIdentifier, FhirReference)
 from utility.util import(DictToObject)
-
+# from apis.immunization.type_lookup import type_lookup
 
 def insert_to_identifier(val, fhirIdn, source, key, session):
     type_idn = []

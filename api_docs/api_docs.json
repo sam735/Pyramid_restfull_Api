@@ -175,6 +175,9 @@
           },
           "400": {
             "description": "bad input parameter"
+          },
+          "500": {
+            "description": "Internal server error, Please try after some time"
           }
         }
       },

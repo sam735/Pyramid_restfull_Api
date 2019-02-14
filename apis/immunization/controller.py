@@ -20,6 +20,7 @@ def add_immunization(request):
 		content_type='application/json; charset=UTF-8')
 
 def fetch_immunization(request):
+	#import pdb; pdb.set_trace()
 	try:
 		rec = search_immunization(request)
 	except Exception:

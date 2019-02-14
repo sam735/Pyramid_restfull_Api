@@ -32,3 +32,11 @@ def to_json_obj(obj):
         obj_str = ast.literal_eval(obj_tup[0])
         l.append(obj_str)
     return l
+
+# def insert_to_source_specific_model(iterable,fhirIdn,source,session):
+#     for key, val in iterable.items():
+#         if type(val).__name__ == 'list':
+#             for value in val:
+#                 fn = type_lookup.get(type(value).__name__ )
+#                 if fn is not None:
+#                     fn( value,fhirIdn,source,key,session)

@@ -82,11 +82,14 @@ class ImmunReaction(Base):
 
 	code_yn = relationship('CodeYn')
 
-	def __init__(self,reaction,fhir_immunization_idn):
+	def __init__(self,reaction,fhir_immunization_idn, session):
 		self.fhir_immunization_idn = fhir_immunization_idn
 		self.date = convertStringToDateTime(reaction.date)
 		self.reported = reaction.reported
 		self.user_idn = 2
+
+		if session is not None:
+			session.add(self)
 
 
 class ImmunVaccinationProtocol(Base):
@@ -112,13 +115,16 @@ class ImmunVaccinationProtocol(Base):
 	code_yn = relationship('CodeYn')
 	fhir_immunization = relationship('FhirImmunization')
 
-	def __init__(self,vacination,fhir_immunization_idn):
+	def __init__(self,vacination,fhir_immunization_idn,session):
 		self.fhir_immunization_idn = fhir_immunization_idn
 		self.does_sequence = vacination.doseSequence
 		self.description = vacination.description
 		self.series = vacination.series
 		self.series_doses = vacination.seriesDoses
 		self.user_idn = 2
+
+		if session is not None:
+			session.add(self)
 
 
 class FhirQuantity(Base):
@@ -145,7 +151,7 @@ class FhirQuantity(Base):
 
 	code_yn = relationship('CodeYn')
 
-	def __init__(self, doseQuantity, fhir_idn, source, attribute):
+	def __init__(self, doseQuantity, fhir_idn, source, attribute, session):
 		self.fhir_idn = fhir_idn
 		self.source = source
 		self.attribute = attribute
@@ -155,3 +161,6 @@ class FhirQuantity(Base):
 		self.system = doseQuantity.system
 		self.code = doseQuantity.code
 		self.user_idn = 2
+
+		if session is not None:
+			session.add(self)

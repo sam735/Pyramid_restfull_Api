@@ -135,13 +135,16 @@ class FhirReference(Base):
 
     code_yn = relationship('CodeYn')
 
-    def __init__(self, refObj=None, fhir_idn=None, source=None, attribute=None):
+    def __init__(self, refObj=None, fhir_idn=None, source=None, attribute=None, session=None):
         self.reference = refObj.reference
         self.display = refObj.display
         self.source = source
         self.attribute = attribute
         self.fhir_idn = fhir_idn
         self.user_idn = 2
+
+        if session is not None:
+            session.add(self)
 
 
 class ProcPerformer(Base):
