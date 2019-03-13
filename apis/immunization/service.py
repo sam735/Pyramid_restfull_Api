@@ -11,6 +11,7 @@ from apis.lookup import immunization_query_params
 from sqlalchemy_filters import apply_filters
 from .type_lookup import type_lookup
 
+
 def insert_immunization(request):
 
     immunization = request.swagger_data['ImmunizationItem']
@@ -18,7 +19,6 @@ def insert_immunization(request):
     immunization_obj = FhirImmunization(immunization, immunization_payload)
     request.db.add(immunization_obj)
     request.db.flush()
-    import pdb; pdb.set_trace()
     for key, val in immunization_payload.items():
         if type(immunization[key]).__name__ == 'list':
             for val in immunization[key]:
@@ -75,6 +75,7 @@ def insert_immunization(request):
                                                                           key,
                                                                           request.db)
     request.db.flush()
+
 
 def search_immunization(request):
     param_obj = request.swagger_data

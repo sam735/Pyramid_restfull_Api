@@ -13,7 +13,7 @@
     }
   },
   "host": "localhost:6547",
-  "basePath": "/api/v1.0/",
+  "basePath": "/api/v1.0",
   "tags": [
     {
       "name": "Zeomega",

@@ -6,35 +6,35 @@ from apis.immunization.controller import add_immunization, fetch_immunization
 
 def includeme(config):
 
-    config.add_route('insert_procedure', 'api/v1.0/Procedures',
+    config.add_route('insert_procedure', '/api/v1.0/Procedures',
                      request_method="POST")
     config.add_view(add_procedure, renderer="json",
                     route_name='insert_procedure')
-    config.add_route('fetch_procedure', 'api/v1.0/Procedures',
+    config.add_route('fetch_procedure', '/api/v1.0/Procedures',
                      request_method="GET")
     config.add_view(search_procedure, renderer="json",
                     route_name='fetch_procedure')
-    config.add_route('insert_allergies', 'api/v1.0/allergies',
+    config.add_route('insert_allergies', '/api/v1.0/allergies',
                      request_method="POST")
     config.add_view(add_allergy, renderer="json",
                     route_name="insert_allergies")
-    config.add_route('fetch_allergies', 'api/v1.0/allergies',
+    config.add_route('fetch_allergies', '/api/v1.0/allergies',
                      request_method="GET")
     config.add_view(get_allergy, renderer="json",
                     route_name="fetch_allergies")
-    config.add_route('insert_problems', 'api/v1.0/problems',
+    config.add_route('insert_problems', '/api/v1.0/problems',
                      request_method="POST")
     config.add_view(add_problem, renderer="json",
                     route_name="insert_problems")
-    config.add_route('fetch_problems', 'api/v1.0/problems',
+    config.add_route('fetch_problems', '/api/v1.0/problems',
                      request_method="GET")
     config.add_view(get_problem, renderer="json",
                     route_name="fetch_problems")
     config.add_route('add_immunization',
-                     'api/v1.0/Immunizations', request_method="POST")
+                     '/api/v1.0/Immunizations', request_method="POST")
     config.add_view(add_immunization, renderer="json",
                     route_name="add_immunization")
     config.add_route('fetch_immunization',
-                    'api/v1.0/Immunizations', request_method="GET")
+                    '/api/v1.0/Immunizations', request_method="GET")
     config.add_view(fetch_immunization, renderer="json",
                     route_name="fetch_immunization")
